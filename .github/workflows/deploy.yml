@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       API_URL: ${{ vars.API_URL }}
       BACKEND_URL: ${{ vars.BACKEND_URL }}
