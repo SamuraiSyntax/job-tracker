@@ -1,3 +1,4 @@
+
 import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 /**
@@ -34,6 +35,28 @@ export function passwordMatchValidator(
     }
 
     return null;
+  };
+}
+
+/**
+ * Vérifie la complexité d'un mot de passe
+ * - Au moins 8 caractères
+ * - Au moins une majuscule
+ * - Au moins une minuscule
+ * - Au moins un chiffre
+ * - Au moins un caractère spécial
+ */
+export function passwordComplexityValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) return null;
+    const errors: any = {};
+    if (value.length < 8) errors.minLength = true;
+    if (!/[A-Z]/.test(value)) errors.uppercase = true;
+    if (!/[a-z]/.test(value)) errors.lowercase = true;
+    if (!/[0-9]/.test(value)) errors.digit = true;
+    if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value)) errors.special = true;
+    return Object.keys(errors).length ? errors : null;
   };
 }
 
@@ -91,7 +114,7 @@ export function phoneValidator(control: AbstractControl): ValidationErrors | nul
 
   // Format français: 01 23 45 67 89, 0123456789, +33123456789, etc.
   const phoneRegex = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/;
-  
+
   if (!phoneRegex.test(control.value)) {
     return { invalidPhone: true };
   }
@@ -116,7 +139,7 @@ export function postalCodeValidator(control: AbstractControl): ValidationErrors 
 
   // Format français: 5 chiffres
   const postalCodeRegex = /^\d{5}$/;
-  
+
   if (!postalCodeRegex.test(control.value)) {
     return { invalidPostalCode: true };
   }

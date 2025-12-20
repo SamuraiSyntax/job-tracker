@@ -31,6 +31,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       } else if (error.status === 404) {
         // Ressource non trouvée - on ne déconnecte jamais sur un 404
         console.warn('[HTTP] Ressource non trouvée:', req.url);
+      } else if (error.status === 429 || (typeof error.error?.message === 'string' && error.error.message.toLowerCase().includes('trop de tentatives'))) {
+        // Blocage anti-bruteforce
+        notificationService.error('Compte temporairement bloqué après trop de tentatives. Réessayez dans 15 minutes.');
       } else if (error.status === 500) {
         // Erreur serveur
         notificationService.error('Erreur serveur. Veuillez réessayer plus tard.');

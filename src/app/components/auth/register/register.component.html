@@ -33,13 +33,38 @@
     <div>
       <label for="password" class="form-label">Mot de passe</label>
       <div class="relative">
-        <input id="password" [type]="hidePassword ? 'password' : 'text'" formControlName="password" required
-          autocomplete="new-password" class="form-input pl-10 pr-10" placeholder="••••••••">
+        <input id="password"
+               [type]="hidePassword ? 'password' : 'text'"
+               formControlName="password"
+               required
+               autocomplete="new-password"
+               class="form-input pl-10 pr-10"
+               placeholder="••••••••"
+               (copy)="$event.preventDefault()"
+               (paste)="$event.preventDefault()"
+               (cut)="$event.preventDefault()">
         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><i class="fas fa-lock"></i></span>
         <button type="button" (click)="hidePassword = !hidePassword"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+          tabindex="-1">
           <i [class]="hidePassword ? 'far fa-eye-slash' : 'far fa-eye'"></i>
         </button>
+      </div>
+      <!-- Indicateur de force du mot de passe -->
+      <div class="mt-2">
+        <div class="h-2 rounded bg-gray-200 dark:bg-gray-700 overflow-hidden">
+          <div [ngClass]="{
+            'bg-red-500': passwordStrength <= 2,
+            'bg-yellow-400': passwordStrength === 3,
+            'bg-blue-400': passwordStrength === 4,
+            'bg-green-500': passwordStrength === 5
+          }"
+          [style.width]="(passwordStrength * 20) + '%'"
+          class="h-2 transition-all"></div>
+        </div>
+        <ul class="text-xs mt-1 text-gray-500 dark:text-gray-400">
+          <li *ngFor="let err of passwordErrors">{{ err }}</li>
+        </ul>
       </div>
       <app-form-field-error [control]="registerForm.get('password')" fieldName="Le mot de passe" />
     </div>

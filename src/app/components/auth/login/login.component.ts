@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService, NotificationService } from '@services/index';
+import * as bcrypt from 'bcryptjs';
 import { AuthCardComponent, FormFieldErrorComponent } from '@shared/index';
 
 @Component({
@@ -28,11 +29,16 @@ export class LoginComponent {
   isLoading = false;
   hidePassword = true;
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.loginForm.valid) {
       this.isLoading = true;
+      const formValue = this.loginForm.value;
+      // Hash du mot de passe côté client (salt faible car le vrai hash est côté serveur)
+      const salt = bcrypt.genSaltSync(6);
+      const hashedPassword = bcrypt.hashSync(formValue.password, salt);
+      const payload = { ...formValue, password: hashedPassword };
 
-      this.authService.login(this.loginForm.value)
+      this.authService.login(payload)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
         next: () => {
