@@ -51,7 +51,5 @@ __screenshots__/
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# --- Fichiers d'environnement Angular ---
-src/environments/environment*.ts
 # (optionnel) Gardez un exemple versionné :
 # !src/environments/environment.example.ts
