@@ -1,59 +1,38 @@
-# Frontend
+# Job Tracker Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+Job Tracker est une application web moderne dédiée à la gestion et au suivi de candidatures.
+Ce dépôt contient l’interface frontend développée avec Angular, offrant une expérience utilisateur fluide, responsive et intuitive.
 
-## Development server
+## Présentation du projet
 
-To start a local development server, run:
 
-```bash
-ng serve
-```
+Job Tracker permet à chaque utilisateur de :
+- Suivre et organiser ses candidatures à des offres d’emploi
+- Gérer ses informations personnelles et son profil
+- Visualiser un tableau de bord synthétique et des statistiques
+- Profiter d’une interface moderne, rapide et responsive
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+L’application s’interface avec une API backend (Spring Boot) pour la gestion des données et l’authentification.
 
-## Code scaffolding
+## Technologies principales utilisées
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Angular** : Framework principal pour le développement frontend (v21+)
+- **TypeScript** : Langage principal pour la robustesse et la maintenabilité
+- **Tailwind CSS** : Pour un design moderne, responsive et personnalisable
+- **RxJS** : Gestion réactive des flux de données
+- **Angular Router** : Navigation et gestion des routes
+- **Angular Forms** : Gestion avancée des formulaires
+- **pnpm** : Gestionnaire de paquets rapide et efficace
+- **Vitest** : Pour les tests unitaires (configuration possible)
 
-```bash
-ng generate component component-name
-```
+## Structure du projet
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- `src/app/` : Composants, services, modules et logique métier
+- `src/environments/` : Fichiers d’environnement (variables selon le contexte)
+- `public/` : Fichiers statiques accessibles directement
+- `tailwind.config.js` : Configuration Tailwind CSS
 
-```bash
-ng generate --help
-```
+## À propos
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Ce frontend est conçu pour être maintenable, évolutif et s’intégrer dans un écosystème fullstack moderne.
+Pour toute question ou suggestion, consulte la documentation Angular ou contacte l’équipe projet.
