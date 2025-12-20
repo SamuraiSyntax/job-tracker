@@ -1,0 +1,216 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl shadow-lg mb-4">
+        <i class="fas fa-cog text-3xl text-white"></i>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Paramètres</h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-2">Gérez vos préférences et paramètres de compte</p>
+    </div>
+
+    <!-- Security Section -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-shield-alt text-primary-600 dark:text-primary-400"></i>
+          Sécurité
+        </h2>
+      </div>
+
+      <div class="p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Changer le mot de passe</h3>
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="space-y-4">
+          <div>
+            <label for="currentPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mot de passe actuel</label>
+            <div class="relative">
+              <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input id="currentPassword" type="password" formControlName="currentPassword" placeholder="••••••••"
+                class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="newPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nouveau mot de
+                passe</label>
+              <div class="relative">
+                <i class="fas fa-lock-open absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input id="newPassword" type="password" formControlName="newPassword" placeholder="••••••••"
+                  class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all">
+              </div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">8 caractères minimum</p>
+            </div>
+
+            <div>
+              <label for="confirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirmer le mot de
+                passe</label>
+              <div class="relative">
+                <i class="fas fa-check-circle absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="••••••••"
+                  class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all">
+              </div>
+            </div>
+          </div>
+
+          @if (passwordForm.hasError('passwordMismatch') && passwordForm.get('confirmPassword')?.touched) {
+          <div class="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+            <i class="fas fa-exclamation-circle"></i>
+            Les mots de passe ne correspondent pas
+          </div>
+          }
+
+          <button type="submit" [disabled]="passwordForm.invalid || isChangingPassword()"
+            class="px-4 py-2.5 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all inline-flex items-center gap-2 shadow-sm">
+            @if (isChangingPassword()) {
+            <i class="fas fa-spinner fa-spin"></i>
+            } @else {
+            <i class="fas fa-save"></i>
+            }
+            Changer le mot de passe
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Notifications Section -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-bell text-primary-600 dark:text-primary-400"></i>
+          Notifications
+        </h2>
+      </div>
+
+      <div class="p-6 space-y-4">
+        @for (setting of notificationSettings(); track setting.id) {
+        <div
+          class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+          <div class="flex items-center gap-4">
+            <i [class]="'fas fa-' + setting.icon.replace('_', '-') + ' text-2xl '"
+              [class.text-primary-600]="setting.enabled" [class.dark:text-primary-400]="setting.enabled"
+              [class.text-gray-400]="!setting.enabled"></i>
+            <div>
+              <h4 class="font-medium text-gray-900 dark:text-white">{{ setting.label }}</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">{{ setting.description }}</p>
+            </div>
+          </div>
+          <label for="notification-{{ setting.id }}" class="relative inline-flex items-center cursor-pointer">
+            <input id="notification-{{ setting.id }}" type="checkbox" [checked]="setting.enabled" (change)="onNotificationToggle(setting)"
+              class="sr-only peer">
+            <div
+              class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600">
+            </div>
+          </label>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Privacy Section -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-user-shield text-primary-600 dark:text-primary-400"></i>
+          Confidentialité
+        </h2>
+      </div>
+
+      <div class="p-6 space-y-4">
+        @for (setting of privacySettings(); track setting.id) {
+        <div
+          class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+          <div class="flex items-center gap-4">
+            <i [class]="'fas fa-' + setting.icon.replace('_', '-') + ' text-2xl '"
+              [class.text-primary-600]="setting.enabled" [class.dark:text-primary-400]="setting.enabled"
+              [class.text-gray-400]="!setting.enabled"></i>
+            <div>
+              <h4 class="font-medium text-gray-900 dark:text-white">{{ setting.label }}</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">{{ setting.description }}</p>
+            </div>
+          </div>
+          <label for="privacy-{{ setting.id }}" class="relative inline-flex items-center cursor-pointer">
+            <input id="privacy-{{ setting.id }}" type="checkbox" [checked]="setting.enabled" (change)="onPrivacyToggle(setting)" class="sr-only peer">
+            <div
+              class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600">
+            </div>
+          </label>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Appearance Section -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-palette text-primary-600 dark:text-primary-400"></i>
+          Apparence
+        </h2>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <div>
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Thème</h3>
+          <app-switch-theme></app-switch-theme>
+        </div>
+
+        <div class="border-t border-gray-200 dark:border-gray-700"></div>
+
+      </div>
+    </div>
+
+    <!-- Data Section -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-red-200 dark:border-red-900/50 overflow-hidden">
+      <div class="p-6 border-b border-red-200 dark:border-red-900/50">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-database text-primary-600 dark:text-primary-400"></i>
+          Données
+        </h2>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <div
+          class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+          <div class="flex items-center gap-4">
+            <i class="fas fa-download text-2xl text-gray-600 dark:text-gray-400"></i>
+            <div>
+              <h4 class="font-medium text-gray-900 dark:text-white">Exporter mes données</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Télécharger une copie de toutes vos données</p>
+            </div>
+          </div>
+          <button (click)="onExportData()"
+            class="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-900 dark:text-white rounded-lg font-medium transition-colors inline-flex items-center gap-2 shadow-sm cursor-pointer disabled:cursor-not-allowed">
+            <i class="fas fa-file-download"></i>
+            Exporter
+          </button>
+        </div>
+
+        <div class="border-t border-gray-200 dark:border-gray-700"></div>
+
+        <div
+          class="flex items-center justify-between p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50">
+          <div class="flex items-center gap-4">
+            <i class="fas fa-trash-alt text-2xl text-red-600 dark:text-red-400"></i>
+            <div>
+              <h4 class="font-medium text-red-900 dark:text-red-100">Supprimer mon compte</h4>
+              <p class="text-sm text-red-700 dark:text-red-300">Supprimer définitivement votre compte et toutes vos
+                données</p>
+            </div>
+          </div>
+          <button (click)="onDeleteAccount()"
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors inline-flex items-center gap-2 shadow-sm cursor-pointer disabled:cursor-not-allowed">
+            <i class="fas fa-exclamation-triangle"></i>
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

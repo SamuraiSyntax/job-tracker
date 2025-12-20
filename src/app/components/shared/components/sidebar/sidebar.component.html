@@ -1,0 +1,66 @@
+<div class="flex flex-col h-full py-6">
+  <!-- Main Menu Section -->
+  <div class="px-3 mb-6">
+    <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase mb-3 px-3">
+      <i class="fas fa-bars"></i>
+      <span>Navigation</span>
+    </div>
+    <nav class="space-y-1">
+      @for (item of mainMenuItems; track item.route) {
+      <a [routerLink]="item.route"
+        routerLinkActive="bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300"
+        [routerLinkActiveOptions]="{exact: item.exact || false}"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all group"
+        [title]="item.description || ''" [attr.aria-label]="item.label">
+        <i [class]="item.icon"></i>
+        <span class="flex-1 font-medium">{{ item.label }}</span>
+        @if (item.badge) {
+        <span
+          class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300">{{
+          item.badge }}</span>
+        }
+        @if (item.label === 'Mes candidatures') {
+        <button (click)="$event.preventDefault(); $event.stopPropagation()" [routerLink]="'/candidatures/new'"
+          class="p-2 flex items-center m-0 cursor-pointer rounded-lg bg-primary-600 hover:bg-primary-700 text-white transition-colors duration-200 opacity-0 group-hover:opacity-100"
+          title="Ajouter une candidature" aria-label="Ajouter une candidature">
+          <i class="fas fa-plus text-xs"></i>
+        </button>
+        } @else {
+        <i class="fas fa-chevron-right text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+        }
+      </a>
+      }
+    </nav>
+  </div>
+
+  <!-- External Links Section -->
+  @if (externalLinks.length > 0) {
+  <div class="px-3 mb-6">
+    <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase mb-3 px-3">
+      <i class="fas fa-link"></i>
+      <span>Liens externes</span>
+    </div>
+    <nav class="space-y-1">
+      @for (link of externalLinks; track link.href) {
+      <a [href]="link.href" [target]="link.target"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
+        [title]="link.description || ''" [attr.aria-label]="link.label">
+        <i [class]="link.icon"></i>
+        <span class="flex-1 font-medium">{{ link.label }}</span>
+        <i class="fas fa-external-link-alt text-xs text-gray-400"></i>
+      </a>
+      }
+    </nav>
+  </div>
+  }
+
+  <!-- Footer -->
+  <div class="mt-auto px-3">
+    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+      <div class="flex items-center gap-2 px-3 text-sm text-gray-500 dark:text-gray-400">
+        <i class="fas fa-info-circle"></i>
+        <span>Version 1.0.0</span>
+      </div>
+    </div>
+  </div>
+</div>

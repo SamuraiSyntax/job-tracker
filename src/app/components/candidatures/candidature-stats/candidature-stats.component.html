@@ -1,0 +1,223 @@
+<div class="max-w-7xl mx-auto p-6">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3 mb-2">
+      <i class="fas fa-chart-bar text-primary-600 dark:text-primary-400"></i>
+      Statistiques des candidatures
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400">Analysez vos candidatures et suivez votre progression</p>
+  </div>
+
+  @if (isLoading()) {
+  <app-loading-spinner message="Chargement des statistiques..." [fullscreen]="true" />
+  } @else if (errorMessage()) {
+  <app-error-card title="Erreur de chargement" [message]="errorMessage()" [showRetry]="true" (retry)="onRetry()" />
+  } @else if (stats()) {
+  <!-- Overview Cards -->
+  <app-stats-overview-cards [stats]="stats()!" class="mb-8 block" />
+
+  <!-- KPIs Clés -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div
+      class="card bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 border-green-200 dark:border-green-700">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-reply text-green-600 dark:text-green-400"></i>
+          Taux de réponse
+        </h3>
+      </div>
+      <div class="text-center">
+        <div class="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">
+          {{ tauxReponse() }}%
+        </div>
+        <p class="text-sm text-green-700 dark:text-green-300">
+          Des candidatures ont reçu une réponse
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="card bg-gradient-to-br from-blue-50 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-800/20 border-blue-200 dark:border-blue-700">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-users text-blue-600 dark:text-blue-400"></i>
+          Taux d'entretien
+        </h3>
+      </div>
+      <div class="text-center">
+        <div class="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+          {{ tauxEntretien() }}%
+        </div>
+        <p class="text-sm text-blue-700 dark:text-blue-300">
+          Des candidatures ont mené à un entretien
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="card bg-gradient-to-br from-purple-50 to-violet-100 dark:from-purple-900/20 dark:to-violet-800/20 border-purple-200 dark:border-purple-700">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-check-circle text-purple-600 dark:text-purple-400"></i>
+          Taux d'acceptation
+        </h3>
+      </div>
+      <div class="text-center">
+        <div class="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+          {{ tauxAcceptation() }}%
+        </div>
+        <p class="text-sm text-purple-700 dark:text-purple-300">
+          Des candidatures ont abouti à une offre
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques par Type de Contrat et Priorité -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="card">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-file-contract text-primary-600 dark:text-primary-400"></i>
+          Répartition par type de contrat
+        </h3>
+      </div>
+      <div class="space-y-4">
+        @for (stat of typeContratStats(); track stat.type) {
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ stat.type }}</span>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-semibold text-gray-900 dark:text-white">
+                {{ stat.count }}
+              </span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">
+                ({{ stat.percentage }}%)
+              </span>
+            </div>
+          </div>
+          <div class="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-500"
+              [class.bg-blue-500]="getTypeContratColor(stat.type) === 'blue'"
+              [class.bg-purple-500]="getTypeContratColor(stat.type) === 'purple'"
+              [class.bg-green-500]="getTypeContratColor(stat.type) === 'green'"
+              [class.bg-yellow-500]="getTypeContratColor(stat.type) === 'yellow'"
+              [class.bg-indigo-500]="getTypeContratColor(stat.type) === 'indigo'"
+              [class.bg-pink-500]="getTypeContratColor(stat.type) === 'pink'" [style.width.%]="stat.percentage"></div>
+          </div>
+        </div>
+        }
+        @if (typeContratStats().length === 0) {
+        <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+          Aucune donnée disponible
+        </p>
+        }
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-flag text-primary-600 dark:text-primary-400"></i>
+          Répartition par priorité
+        </h3>
+      </div>
+      <div class="space-y-4">
+        @for (stat of prioriteStats(); track stat.priorite) {
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ stat.priorite }}</span>
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-semibold text-gray-900 dark:text-white">
+                {{ stat.count }}
+              </span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">
+                ({{ stat.percentage }}%)
+              </span>
+              <span
+                class="text-xs font-medium px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
+                {{ stat.tauxConversion }}% conversion
+              </span>
+            </div>
+          </div>
+          <div class="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-500"
+              [class.bg-red-500]="getPrioriteColor(stat.priorite) === 'red'"
+              [class.bg-yellow-500]="getPrioriteColor(stat.priorite) === 'yellow'"
+              [class.bg-green-500]="getPrioriteColor(stat.priorite) === 'green'" [style.width.%]="stat.percentage">
+            </div>
+          </div>
+        </div>
+        }
+        @if (prioriteStats().length === 0) {
+        <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+          Aucune donnée disponible
+        </p>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Score Statistics -->
+  @if (scoreStats().count > 0) {
+  <div
+    class="card mb-8 bg-gradient-to-br from-amber-50 to-orange-100 dark:from-amber-900/20 dark:to-orange-800/20 border-amber-200 dark:border-amber-700">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+        <i class="fas fa-star text-amber-600 dark:text-amber-400"></i>
+        Analyse des scores
+      </h3>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Score moyen -->
+      <div class="text-center p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+        <div class="text-5xl font-bold text-amber-600 dark:text-amber-400 mb-3">
+          {{ scoreStats().average }}/5
+        </div>
+        <div class="flex justify-center gap-1 mb-3">
+          @for (star of [1,2,3,4,5]; track star) {
+          <i class="fas fa-star text-2xl" [class.text-amber-400]="star <= scoreStats().average"
+            [class.dark:text-amber-500]="star <= scoreStats().average"
+            [class.text-gray-300]="star > scoreStats().average"
+            [class.dark:text-gray-600]="star > scoreStats().average"></i>
+          }
+        </div>
+        <p class="text-sm text-amber-700 dark:text-amber-300 font-medium">
+          Score moyen sur {{ scoreStats().count }} candidature(s)
+        </p>
+      </div>
+
+      <!-- Distribution des scores -->
+      <div class="space-y-3">
+        @for (dist of scoreStats().distribution; track dist.score) {
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-1 w-24">
+            @for (star of [1,2,3,4,5]; track star) {
+            <i class="fas fa-star text-xs" [class.text-amber-400]="star <= dist.score"
+              [class.text-gray-300]="star > dist.score"></i>
+            }
+          </div>
+          <div class="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div class="h-full bg-amber-500 rounded-full transition-all duration-500" [style.width.%]="dist.percentage">
+            </div>
+          </div>
+          <span class="text-sm font-semibold text-gray-900 dark:text-white w-16 text-right">
+            {{ dist.count }} ({{ dist.percentage }}%)
+          </span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Daily Chart -->
+  @if (dailyStats().length > 0) {
+  <app-daily-chart [dailyStats]="dailyStats()" class="mb-8 block" />
+
+  <!-- Summary Statistics -->
+  <app-stats-summary [dailyStats]="dailyStats()" class="block" />
+  }
+  }
+</div>

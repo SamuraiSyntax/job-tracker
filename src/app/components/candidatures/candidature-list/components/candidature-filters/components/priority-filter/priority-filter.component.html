@@ -1,0 +1,69 @@
+<div class="relative">
+  <button
+    type="button"
+    (click)="toggleDropdown()"
+    class="input px-4 w-full text-left cursor-pointer transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500 flex items-center justify-between"
+    [class.ring-2]="showDropdown()"
+    [class.ring-primary-500]="showDropdown()"
+    [class.dark:ring-primary-400]="showDropdown()"
+    [class.border-primary-500]="showDropdown()"
+    [class.dark:border-primary-400]="showDropdown()"
+  >
+    <div class="flex items-center gap-3 flex-1 min-w-0">
+      <i
+        class="fas fa-flag text-gray-400 transition-all"
+        [class.text-primary-600]="showDropdown()"
+        [class.dark:text-primary-400]="showDropdown()"
+        [class.scale-110]="showDropdown()"
+      ></i>
+      @if (selectedPriorite()) {
+        <span class="px-2 py-1 rounded-full text-xs font-medium truncate" [class]="getPrioriteBadgeClass(selectedPriorite())">
+          {{ getPrioriteLabelOrAll(selectedPriorite()) }}
+        </span>
+      } @else {
+        <span class="text-gray-600 dark:text-gray-400 truncate">Toutes les priorités</span>
+      }
+    </div>
+    <i
+      class="ml-2 fas fa-chevron-down text-gray-400 text-xs transition-transform duration-200"
+      [class.rotate-180]="showDropdown()"
+      [class.text-primary-600]="showDropdown()"
+      [class.dark:text-primary-400]="showDropdown()"
+    ></i>
+  </button>
+
+  @if (showDropdown()) {
+    <div class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 z-[9999] animate-in slide-in-from-top-2 fade-in duration-200 overflow-hidden max-h-96 overflow-y-auto custom-scrollbar">
+      <button
+        type="button"
+        (click)="selectPriorite('')"
+        class="w-full cursor-pointer px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 flex items-center gap-3"
+        [class.bg-primary-50]="!selectedPriorite()"
+        [class.dark:bg-primary-900/20]="!selectedPriorite()"
+      >
+        <i class="fas fa-list text-gray-400"></i>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Toutes les priorités</span>
+        @if (!selectedPriorite()) {
+          <i class="fas fa-check text-primary-600 dark:text-primary-400 ml-auto"></i>
+        }
+      </button>
+      <div class="border-t border-gray-200 dark:border-gray-700"></div>
+      @for (priorite of priorites; track priorite) {
+        <button
+          type="button"
+          (click)="selectPriorite(priorite)"
+          class="w-full cursor-pointer px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 flex items-center gap-3"
+          [class.bg-primary-50]="selectedPriorite() === priorite"
+          [class.dark:bg-primary-900/20]="selectedPriorite() === priorite"
+        >
+          <span class="px-2 py-1 rounded-full text-xs font-medium" [class]="getPrioriteBadgeClass(priorite)">
+            {{ getPrioriteLabel(priorite) }}
+          </span>
+          @if (selectedPriorite() === priorite) {
+            <i class="fas fa-check text-primary-600 dark:text-primary-400 ml-auto"></i>
+          }
+        </button>
+      }
+    </div>
+  }
+</div>

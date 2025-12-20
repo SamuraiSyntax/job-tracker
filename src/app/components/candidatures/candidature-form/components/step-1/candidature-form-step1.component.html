@@ -1,0 +1,155 @@
+<div [formGroup]="form"
+    class="card border-l-4 border-primary-500 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-300 animate-fadeIn">
+    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center">
+            <i class="fas fa-info-circle text-primary-600 dark:text-primary-400"></i>
+        </div>
+        <div>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Informations principales</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Entreprise, poste et localisation</p>
+        </div>
+        <div class="ml-auto flex items-center gap-2">
+            <span class="text-xs font-medium px-2 py-1 rounded-full" [class]="form.get('entreprise')?.valid && form.get('poste')?.valid && form.get('localisation')?.valid 
+                  ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'">
+                <i class="fas fa-asterisk mr-1"></i>Requis
+            </span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- Entreprise -->
+        <div class="group">
+            <label for="entreprise" class="form-label flex items-center gap-2">
+                <i class="fas fa-building text-primary-500 text-sm"></i>
+                <span>Entreprise</span>
+                <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+                <input id="entreprise" type="text" formControlName="entreprise"
+                    class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-primary-500"
+                    placeholder="Ex: Google, Microsoft, Amazon..." autocomplete="organization">
+                <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-primary-500 group-focus-within:left-4">
+                    <i class="fas fa-building"></i>
+                </span>
+            </div>
+            <app-form-field-error [control]="form.get('entreprise')" fieldName="L'entreprise" />
+        </div>
+
+        <!-- Poste -->
+        <div class="group">
+            <label for="poste" class="form-label flex items-center gap-2">
+                <i class="fas fa-briefcase text-primary-500 text-sm"></i>
+                <span>Poste</span>
+                <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+                <input id="poste" type="text" formControlName="poste"
+                    class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-primary-500"
+                    placeholder="Ex: Développeur Full Stack, DevOps..." autocomplete="organization-title">
+                <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-primary-500 group-focus-within:left-4">
+                    <i class="fas fa-briefcase"></i>
+                </span>
+            </div>
+            <app-form-field-error [control]="form.get('poste')" fieldName="Le poste" />
+        </div>
+
+        <!-- Localisation -->
+        <div class="group">
+            <label for="localisation" class="form-label flex items-center gap-2">
+                <i class="fas fa-map-marker-alt text-primary-500 text-sm"></i>
+                <span>Localisation</span>
+                <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+                <input id="localisation" type="text" formControlName="localisation"
+                    class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-primary-500"
+                    placeholder="Ex: Paris, Lyon, Remote..." autocomplete="address-level2">
+                <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-primary-500 group-focus-within:left-4">
+                    <i class="fas fa-map-marker-alt"></i>
+                </span>
+            </div>
+            <app-form-field-error [control]="form.get('localisation')" fieldName="La localisation" />
+        </div>
+
+        <!-- Type de contrat -->
+        <div class="group">
+            <label for="typeContrat" class="form-label flex items-center gap-2">
+                <i class="fas fa-file-contract text-primary-500 text-sm"></i>
+                <span>Type de contrat</span>
+            </label>
+            <div class="relative">
+                <select id="typeContrat" formControlName="typeContrat"
+                    class="form-input pl-11 transition-all duration-200 focus:ring-2 focus:ring-primary-500">
+                    <option [ngValue]="null">-- Sélectionner un type --</option>
+                    @for (type of typesContrat; track type) {
+                    <option [ngValue]="type">{{ getTypeContratLabel(type) }}</option>
+                    }
+                </select>
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <i class="fas fa-file-contract"></i>
+                </span>
+            </div>
+        </div>
+
+        <!-- Lien offre -->
+        <div class="group">
+            <label for="lienOffre" class="form-label flex items-center gap-2">
+                <i class="fas fa-link text-primary-500 text-sm"></i>
+                <span>Lien de l'offre</span>
+            </label>
+            <div class="relative">
+                <input id="lienOffre" type="url" formControlName="lienOffre"
+                    class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-primary-500"
+                    placeholder="https://exemple.com/offre" autocomplete="url">
+                <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-primary-500 group-focus-within:left-4">
+                    <i class="fas fa-link"></i>
+                </span>
+            </div>
+            <app-form-field-error [control]="form.get('lienOffre')" fieldName="Le lien" />
+        </div>
+
+        <!-- Source -->
+        <div class="group">
+            <label for="source" class="form-label flex items-center gap-2">
+                <i class="fas fa-rss text-primary-500 text-sm"></i>
+                <span>Source</span>
+            </label>
+            <div class="relative">
+                <input id="source" type="text" formControlName="source"
+                    class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-primary-500"
+                    placeholder="LinkedIn, Indeed, Site entreprise..." autocomplete="off">
+                <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-primary-500 group-focus-within:left-4">
+                    <i class="fas fa-rss"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="mt-5 group">
+        <label for="description" class="form-label flex items-center gap-2">
+            <i class="fas fa-align-left text-primary-500 text-sm"></i>
+            <span>Description / Notes personnelles</span>
+        </label>
+        <div class="relative">
+            <textarea id="description" formControlName="description"
+                class="form-input pl-11 pt-3 min-h-[120px] transition-all duration-200 focus:ring-2 focus:ring-primary-500"
+                placeholder="Ajoutez vos notes : motivations, points clés de l'offre, prochaines étapes..."
+                rows="4"></textarea>
+            <span
+                class="absolute left-3 top-3 text-gray-400 transition-colors duration-200 group-focus-within:text-primary-500">
+                <i class="fas fa-align-left"></i>
+            </span>
+        </div>
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 ml-11">
+            <i class="fas fa-lightbulb mr-1"></i>
+            Ces notes sont privées et ne sont visibles que par vous
+        </p>
+    </div>
+</div>

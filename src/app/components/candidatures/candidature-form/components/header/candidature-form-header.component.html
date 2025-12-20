@@ -1,0 +1,95 @@
+<div class="mb-8">
+    <div class="flex items-center justify-between mb-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3 mb-2">
+                <div
+                    class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 flex items-center justify-center shadow-lg shadow-primary-500/30">
+                    <i class="fas {{ isEditMode ? 'fa-edit' : 'fa-plus' }} text-white text-xl"></i>
+                </div>
+                <span>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Candidature</span>
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400 ml-14">Complétez les informations de votre candidature</p>
+        </div>
+
+        <!-- Progress indicator interactif -->
+        <div class="hidden lg:flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-lg">
+            <!-- Étape 1: Infos -->
+            <button type="button" (click)="goToStep(1)"
+                class="flex items-center gap-2 group cursor-pointer disabled:cursor-not-allowed">
+                <div [class]="isStep1Valid() ? 'bg-green-500 text-white shadow-lg shadow-green-500/30' : currentStep() === 1 ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30' : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400'"
+                    class="w-10 h-10 rounded-full transition-all duration-300 flex items-center justify-center text-sm font-bold group-hover:scale-110 cursor-pointer">
+                    @if (isStep1Valid()) {
+                    <i class="fas fa-check"></i>
+                    } @else {
+                    <span>1</span>
+                    }
+                </div>
+                <span class="text-xs font-medium hidden xl:inline transition-colors"
+                    [class]="currentStep() === 1 ? 'text-primary-600 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'">
+                    Infos
+                </span>
+            </button>
+
+            <div class="w-10 h-1 rounded-full transition-all duration-300"
+                [class]="isStep1Valid() ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'"></div>
+
+            <!-- Étape 2: Dates -->
+            <button type="button" (click)="goToStep(2)" [disabled]="!isStep1Valid()"
+                class="flex items-center gap-2 group cursor-pointer disabled:cursor-not-allowed">
+                <div [class]="isStep2Valid() ? 'bg-green-500 text-white shadow-lg shadow-green-500/30' : currentStep() === 2 ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30' : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400'"
+                    class="w-10 h-10 rounded-full transition-all duration-300 flex items-center justify-center text-sm font-bold group-hover:scale-110">
+                    @if (isStep2Valid()) {
+                    <i class="fas fa-check"></i>
+                    } @else {
+                    <span>2</span>
+                    }
+                </div>
+                <span class="text-xs font-medium hidden xl:inline transition-colors"
+                    [class]="currentStep() === 2 ? 'text-primary-600 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'">
+                    Dates
+                </span>
+            </button>
+
+            <div class="w-10 h-1 rounded-full transition-all duration-300"
+                [class]="isStep2Valid() ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'"></div>
+
+            <!-- Étape 3: Contact -->
+            <button type="button" (click)="goToStep(3)" [disabled]="!isStep1Valid() || !isStep2Valid()"
+                class="flex items-center gap-2 group cursor-pointer disabled:cursor-not-allowed">
+                <div [class]="isStep3Valid() ? 'bg-green-500 text-white shadow-lg shadow-green-500/30' : currentStep() === 3 ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30' : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400'"
+                    class="w-10 h-10 rounded-full transition-all duration-300 flex items-center justify-center text-sm font-bold group-hover:scale-110">
+                    @if (isStep3Valid()) {
+                    <i class="fas fa-check"></i>
+                    } @else {
+                    <span>3</span>
+                    }
+                </div>
+                <span class="text-xs font-medium hidden xl:inline transition-colors"
+                    [class]="currentStep() === 3 ? 'text-primary-600 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'">
+                    Contact
+                </span>
+            </button>
+
+            <div class="w-10 h-1 rounded-full transition-all duration-300"
+                [class]="isStep3Valid() ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'"></div>
+
+            <!-- Étape 4: Conditions -->
+            <button type="button" (click)="goToStep(4)"
+                [disabled]="!isStep1Valid() || !isStep2Valid() || !isStep3Valid()"
+                class="flex items-center gap-2 group cursor-pointer disabled:cursor-not-allowed">
+                <div [class]="isStep4Valid() ? 'bg-green-500 text-white shadow-lg shadow-green-500/30' : currentStep() === 4 ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30' : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400'"
+                    class="w-10 h-10 rounded-full transition-all duration-300 flex items-center justify-center text-sm font-bold group-hover:scale-110">
+                    @if (isStep4Valid()) {
+                    <i class="fas fa-check"></i>
+                    } @else {
+                    <span>4</span>
+                    }
+                </div>
+                <span class="text-xs font-medium hidden xl:inline transition-colors"
+                    [class]="currentStep() === 4 ? 'text-primary-600 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'">
+                    Conditions
+                </span>
+            </button>
+        </div>
+    </div>
+</div>

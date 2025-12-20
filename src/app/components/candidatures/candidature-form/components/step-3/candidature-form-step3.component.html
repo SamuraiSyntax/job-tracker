@@ -1,0 +1,138 @@
+<div [formGroup]="form"
+    class="card border-l-4 border-green-500 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-300 animate-fadeIn">
+    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
+            <i class="fas fa-user-tie text-green-600 dark:text-green-400"></i>
+        </div>
+        <div>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Informations de contact</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Personne de contact et moyens de communication</p>
+        </div>
+    </div>
+
+    <div class="space-y-5">
+        <!-- Première ligne: Nom et Canal -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Nom contact -->
+            <div class="group">
+                <label for="contactNom" class="form-label flex items-center gap-2">
+                    <i class="fas fa-user text-green-500 text-sm"></i>
+                    <span>Nom du contact</span>
+                </label>
+                <div class="relative">
+                    <input id="contactNom" type="text" formControlName="contactNom"
+                        class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-green-500"
+                        placeholder="Ex: Jean Dupont" autocomplete="name">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-green-500 group-focus-within:left-4">
+                        <i class="fas fa-user"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Canal contact -->
+            <div class="group">
+                <label for="canalContact" class="form-label flex items-center gap-2">
+                    <i class="fas fa-comment text-green-500 text-sm"></i>
+                    <span>Canal de contact</span>
+                </label>
+                <div class="relative">
+                    <select id="canalContact" formControlName="canalContact"
+                        class="form-input pl-11 transition-all duration-200 focus:ring-2 focus:ring-green-500">
+                        <option [ngValue]="null">-- Sélectionner un canal --</option>
+                        @for (canal of canauxContact; track canal) {
+                        <option [ngValue]="canal">{{ getCanalContactLabel(canal) }}</option>
+                        }
+                    </select>
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <i class="fas fa-comment"></i>
+                    </span>
+                </div>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Sélectionnez le moyen de communication principal
+                </p>
+            </div>
+        </div>
+
+        <!-- Champs conditionnels selon le canal -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Email (affiché si EMAIL sélectionné) -->
+            @if (showEmailField()) {
+            <div class="group animate-fadeIn">
+                <label for="contactEmail" class="form-label flex items-center gap-2">
+                    <i class="fas fa-envelope text-green-500 text-sm"></i>
+                    <span>Email du contact</span>
+                </label>
+                <div class="relative">
+                    <input id="contactEmail" type="email" formControlName="contactEmail"
+                        class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-green-500"
+                        placeholder="contact@exemple.com" autocomplete="email">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-green-500 group-focus-within:left-4">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                </div>
+                <app-form-field-error [control]="form.get('contactEmail')" fieldName="L'email" />
+            </div>
+            }
+
+            <!-- Téléphone (affiché si TELEPHONE sélectionné) -->
+            @if (showPhoneField()) {
+            <div class="group animate-fadeIn">
+                <label for="contactTelephone" class="form-label flex items-center gap-2">
+                    <i class="fas fa-phone text-green-500 text-sm"></i>
+                    <span>Téléphone du contact</span>
+                </label>
+                <div class="relative">
+                    <input id="contactTelephone" type="tel" formControlName="contactTelephone"
+                        class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-green-500"
+                        placeholder="+33 6 12 34 56 78" autocomplete="tel">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-green-500 group-focus-within:left-4">
+                        <i class="fas fa-phone"></i>
+                    </span>
+                </div>
+            </div>
+            }
+
+            <!-- LinkedIn (affiché si LINKEDIN sélectionné) -->
+            @if (showLinkedinField()) {
+            <div class="group animate-fadeIn">
+                <label for="contactLinkedin" class="form-label flex items-center gap-2">
+                    <i class="fab fa-linkedin text-green-500 text-sm"></i>
+                    <span>Profil LinkedIn</span>
+                </label>
+                <div class="relative">
+                    <input id="contactLinkedin" type="url" formControlName="contactLinkedin"
+                        class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-green-500"
+                        placeholder="https://linkedin.com/in/..." autocomplete="url">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-green-500 group-focus-within:left-4">
+                        <i class="fab fa-linkedin"></i>
+                    </span>
+                </div>
+            </div>
+            }
+
+            <!-- Site web (affiché si SITE sélectionné) -->
+            @if (showSiteField()) {
+            <div class="group animate-fadeIn">
+                <label for="contactSite" class="form-label flex items-center gap-2">
+                    <i class="fas fa-globe text-green-500 text-sm"></i>
+                    <span>Site web du contact</span>
+                </label>
+                <div class="relative">
+                    <input id="contactSite" type="url" formControlName="contactSite"
+                        class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-green-500"
+                        placeholder="https://exemple.com" autocomplete="url">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-green-500 group-focus-within:left-4">
+                        <i class="fas fa-globe"></i>
+                    </span>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>

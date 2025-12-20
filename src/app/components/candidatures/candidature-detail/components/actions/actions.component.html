@@ -1,0 +1,36 @@
+<h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center">
+        <i class="fas fa-bolt text-white text-sm"></i>
+    </div>
+    Actions rapides
+</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <!-- Primary: Edit -->
+    <button type="button" (click)="edit.emit()" title="Modifier la candidature" aria-label="Modifier la candidature"
+        class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white shadow-sm hover:shadow-md transition-transform transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer disabled:cursor-not-allowed">
+        <i class="fas fa-edit"></i>
+        <span class="font-medium">Modifier</span>
+    </button>
+
+    <!-- Duplicate -->
+    <button type="button" (click)="duplicate.emit()" title="Dupliquer la candidature"
+        aria-label="Dupliquer la candidature"
+        class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-900 transition focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer disabled:cursor-not-allowed">
+        <i class="fas fa-copy"></i>
+        <span class="font-medium">Dupliquer</span>
+    </button>
+
+    <!-- Share -->
+    <button type="button" (click)="share.emit()" title="Partager la candidature" aria-label="Partager la candidature"
+        class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/60 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 text-primary-600 dark:text-primary-400 hover:bg-white/80 dark:hover:bg-gray-800/80 transition focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer disabled:cursor-not-allowed">
+        <i class="fas fa-share-alt"></i>
+        <span class="font-medium">Partager</span>
+    </button>
+
+    <!-- Delete (danger) -->
+    <button type="button" (click)="delete.emit()" title="Supprimer la candidature" aria-label="Supprimer la candidature"
+        class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white shadow-sm hover:shadow-md transition-transform transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer disabled:cursor-not-allowed">
+        <i class="fas fa-trash"></i>
+        <span class="font-medium">Supprimer</span>
+    </button>
+</div>

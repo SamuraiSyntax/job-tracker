@@ -1,0 +1,138 @@
+<div class="max-w-7xl mx-auto p-6">
+  <!-- Header -->
+  <div class="card mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div class="flex items-center gap-6">
+        <div
+          class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+          {{ getInitials() }}
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+            {{ currentUser()?.prenom }} {{ currentUser()?.nom }}
+          </h1>
+          <p class="text-gray-600 dark:text-gray-400 mb-2">{{ currentUser()?.email }}</p>
+          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium"
+            [class.bg-purple-100]="currentUser()?.role === 'ADMIN'"
+            [class.text-purple-800]="currentUser()?.role === 'ADMIN'"
+            [class.dark:bg-purple-900/20]="currentUser()?.role === 'ADMIN'"
+            [class.dark:text-purple-400]="currentUser()?.role === 'ADMIN'"
+            [class.bg-blue-100]="currentUser()?.role !== 'ADMIN'"
+            [class.text-blue-800]="currentUser()?.role !== 'ADMIN'"
+            [class.dark:bg-blue-900/20]="currentUser()?.role !== 'ADMIN'"
+            [class.dark:text-blue-400]="currentUser()?.role !== 'ADMIN'">
+            <i [class]="currentUser()?.role === 'ADMIN' ? 'fas fa-shield-alt' : 'fas fa-user'"></i>
+            {{ currentUser()?.role }}
+          </span>
+        </div>
+      </div>
+      @if (!isEditMode()) {
+      <button class="btn-primary cursor-pointer disabled:cursor-not-allowed" (click)="toggleEditMode()">
+        <i class="fas fa-edit"></i>
+        Modifier le profil
+      </button>
+      }
+    </div>
+  </div>
+
+  <!-- Profile Form -->
+  <div class="card mb-8">
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+        <i class="fas fa-user-circle text-primary-600 dark:text-primary-400"></i>
+        Informations personnelles
+      </h2>
+    </div>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="prenom" class="form-label">Prénom</label>
+          <div class="relative">
+            <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input id="prenom" type="text" formControlName="prenom" placeholder="Votre prénom" class="form-input pl-10">
+          </div>
+          <app-form-field-error [control]="profileForm.get('prenom')" fieldName="Le prénom" />
+        </div>
+
+        <div>
+          <label for="nom" class="form-label">Nom</label>
+          <div class="relative">
+            <i class="fas fa-id-badge absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input id="nom" type="text" formControlName="nom" placeholder="Votre nom" class="form-input pl-10">
+          </div>
+          <app-form-field-error [control]="profileForm.get('nom')" fieldName="Le nom" />
+        </div>
+      </div>
+
+      <div>
+        <label for="email" class="form-label">Email</label>
+        <div class="relative">
+          <i class="fas fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input id="email" type="email" formControlName="email" placeholder="votre@email.com" class="form-input pl-10">
+        </div>
+        <app-form-field-error [control]="profileForm.get('email')" fieldName="L'email" />
+      </div>
+
+      <div>
+        <label for="role" class="form-label">Rôle</label>
+        <div class="relative">
+          <i class="fas fa-shield-alt absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input id="role" type="text" formControlName="role" placeholder="Rôle" class="form-input pl-10">
+        </div>
+      </div>
+
+      @if (isEditMode()) {
+      <div class="flex justify-end gap-3">
+        <button type="button" (click)="toggleEditMode()" [disabled]="isLoading()" class="btn-outline cursor-pointer disabled:cursor-not-allowed">
+          Annuler
+        </button>
+        <button type="submit" [disabled]="profileForm.invalid || isLoading()" class="btn-primary cursor-pointer disabled:cursor-not-allowed">
+          @if (isLoading()) {
+          <i class="fas fa-spinner fa-spin"></i>
+          } @else {
+          <i class="fas fa-save"></i>
+          }
+          Enregistrer
+        </button>
+      </div>
+      }
+    </form>
+  </div>
+
+  <!-- Stats Card -->
+  <div class="card">
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+        <i class="fas fa-chart-bar text-primary-600 dark:text-primary-400"></i>
+        Statistiques
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="text-center p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+        <i class="fas fa-briefcase text-3xl text-purple-600 dark:text-purple-400 mb-2"></i>
+        <div class="text-2xl font-bold text-gray-900 dark:text-white">0</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">Candidatures</div>
+      </div>
+
+      <div class="text-center p-4 rounded-lg bg-orange-50 dark:bg-orange-900/20">
+        <i class="fas fa-clock text-3xl text-orange-600 dark:text-orange-400 mb-2"></i>
+        <div class="text-2xl font-bold text-gray-900 dark:text-white">0</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">En cours</div>
+      </div>
+
+      <div class="text-center p-4 rounded-lg bg-green-50 dark:bg-green-900/20">
+        <i class="fas fa-check-circle text-3xl text-green-600 dark:text-green-400 mb-2"></i>
+        <div class="text-2xl font-bold text-gray-900 dark:text-white">0</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">Acceptées</div>
+      </div>
+
+      <div class="text-center p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+        <i class="fas fa-calendar-check text-3xl text-blue-600 dark:text-blue-400 mb-2"></i>
+        <div class="text-2xl font-bold text-gray-900 dark:text-white">0</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">Entretiens</div>
+      </div>
+    </div>
+  </div>
+</div>

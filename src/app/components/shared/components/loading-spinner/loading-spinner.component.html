@@ -1,0 +1,6 @@
+<div class="flex flex-col items-center justify-center" [class.fixed]="fullscreen()" [class.inset-0]="fullscreen()" [class.bg-white/80]="fullscreen()" [class.dark:bg-gray-900/80]="fullscreen()" [class.z-50]="fullscreen()" [class.py-8]="!fullscreen()">
+  <div class="animate-spin rounded-full border-4 border-primary-200 border-t-primary-600 dark:border-primary-800 dark:border-t-primary-400" [style.width.px]="diameter()" [style.height.px]="diameter()"></div>
+  @if (message()) {
+    <p class="mt-4 text-gray-600 dark:text-gray-400 font-medium">{{ message() }}</p>
+  }
+</div>

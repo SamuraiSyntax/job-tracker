@@ -1,0 +1,57 @@
+<h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center">
+        <i class="fas fa-user-tie text-white text-sm"></i>
+    </div>
+    Informations de contact
+</h2>
+
+@if (candidature?.contactNom || candidature?.contactEmail || candidature?.contactTelephone || candidature?.lienOffre) {
+<div class="space-y-3">
+    @if (candidature?.contactNom) {
+    <div
+        class="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-all hover:shadow-md hover:border-teal-300 dark:hover:border-teal-600">
+        <p class="text-xs text-teal-600 dark:text-teal-400 font-medium uppercase mb-1">Nom du contact</p>
+        <p class="font-bold text-gray-900 dark:text-white">{{ candidature!.contactNom }}</p>
+    </div>
+    }
+
+    @if (candidature?.contactEmail) {
+    <div
+        class="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-all hover:shadow-md hover:border-teal-300 dark:hover:border-teal-600">
+        <p class="text-xs text-teal-600 dark:text-teal-400 font-medium uppercase mb-1">E-mail</p>
+        <a [href]="'mailto:' + candidature!.contactEmail"
+            class="font-bold text-primary-600 dark:text-primary-400 hover:underline">{{ candidature!.contactEmail }}</a>
+    </div>
+    }
+
+    @if (candidature?.contactTelephone) {
+    <div
+        class="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-all hover:shadow-md hover:border-teal-300 dark:hover:border-teal-600">
+        <p class="text-xs text-teal-600 dark:text-teal-400 font-medium uppercase mb-1">Téléphone</p>
+        <a [href]="'tel:' + candidature!.contactTelephone"
+            class="font-bold text-primary-600 dark:text-primary-400 hover:underline">{{ candidature!.contactTelephone
+            }}</a>
+    </div>
+    }
+
+    @if (candidature?.lienOffre) {
+    <div
+        class="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-all hover:shadow-md hover:border-teal-300 dark:hover:border-teal-600">
+        <p class="text-xs text-teal-600 dark:text-teal-400 font-medium uppercase mb-1">Lien de l'offre</p>
+        <div class="flex items-center gap-2">
+            <a [href]="candidature!.lienOffre" target="_blank" rel="noopener noreferrer"
+                class="text-sm text-primary-600 dark:text-primary-400 hover:underline truncate flex-1">{{
+                candidature!.lienOffre }}</a>
+            <button type="button" class="btn-icon focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer disabled:cursor-not-allowed"
+                aria-label="Copier le lien" (click)="copyLink.emit(candidature!.lienOffre)"><i
+                    class="fas fa-copy"></i></button>
+        </div>
+    </div>
+    }
+</div>
+} @else {
+<div class="text-center py-8">
+    <i class="fas fa-address-book text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
+    <p class="text-sm text-gray-500 dark:text-gray-400">Aucune information de contact</p>
+</div>
+}

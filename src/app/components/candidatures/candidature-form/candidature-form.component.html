@@ -1,0 +1,38 @@
+<div class="max-w-5xl mx-auto p-6">
+  <!-- Header avec progression -->
+  <app-candidature-form-header [isEditMode]="isEditMode" [currentStep]="currentStep" [isStep1Valid]="isStep1Valid"
+    [isStep2Valid]="isStep2Valid" [isStep3Valid]="isStep3Valid" [isStep4Valid]="isStep4Valid" [goToStep]="goToStep">
+  </app-candidature-form-header>
+
+  <form [formGroup]="candidatureForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+    @if (currentStep() === 1) {
+    <app-candidature-form-step1 [form]="candidatureForm" [typesContrat]="typesContrat"
+      [getTypeContratLabel]="getTypeContratLabel"></app-candidature-form-step1>
+    }
+
+    @if (currentStep() === 2) {
+    <app-candidature-form-step2 [form]="candidatureForm" [statuts]="statuts" [getStatutLabel]="getStatutLabel"
+      [priorites]="priorites" [getPrioriteLabel]="getPrioriteLabel"></app-candidature-form-step2>
+    }
+
+    @if (currentStep() === 3) {
+    <app-candidature-form-step3 [form]="candidatureForm" [canauxContact]="canauxContact"
+      [getCanalContactLabel]="getCanalContactLabel"></app-candidature-form-step3>
+    }
+
+    @if (currentStep() === 4) {
+    <app-candidature-form-step4 [form]="candidatureForm" [typesRemuneration]="typesRemuneration"
+      [typesTeletravail]="typesTeletravail"
+      [getTypeRemunerationLabel]="getTypeRemunerationLabel"
+      [getTypeTeletravailLabel]="getTypeTeletravailLabel"></app-candidature-form-step4>
+    }
+
+    <!-- Footer avec boutons de navigation -->
+    <app-candidature-form-footer [currentStep]="currentStep" [totalSteps]="totalSteps"
+      [canGoToNextStep]="canGoToNextStep" [isLastStep]="isLastStep" [isFirstStep]="isFirstStep"
+      [previousStep]="previousStep" [nextStep]="nextStep" [onCancel]="onCancel"
+      [candidatureFormValid]="candidatureForm.valid" [isLoading]="isLoading" [isEditMode]="isEditMode">
+    </app-candidature-form-footer>
+  </form>
+</div>

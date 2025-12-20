@@ -1,0 +1,206 @@
+@for (columnKey of visibleColumns(); track columnKey) {
+@switch (columnKey) {
+@case ('id') {
+<td class="px-6 py-4 whitespace-nowrap align-middle w-20">
+    <span
+        class="inline-flex items-center justify-center px-2.5 py-1 rounded-md text-xs font-bold text-primary-700 dark:text-primary-300 bg-primary-100 dark:bg-primary-900/40 border border-primary-300 dark:border-primary-700">
+        #{{ candidature().id }}
+    </span>
+</td>
+}
+@case ('entreprise') {
+<td class="px-6 py-4 align-middle whitespace-nowrap">
+    <span class="text-sm font-bold text-gray-900 dark:text-white">
+        {{ candidature().entreprise || '-' }}
+    </span>
+</td>
+}
+@case ('poste') {
+<td class="px-6 py-4 whitespace-nowrap">
+    <a [routerLink]="['/candidatures', candidature().id]"
+        class="text-sm font-bold text-gray-900 dark:text-white font-semibold underline-none underline-offset-2 hover:text-primary-900 dark:hover:text-primary-100 transition-colors cursor-pointer"
+        title="Voir le détail de la candidature">
+        {{ candidature().poste || '-' }}
+    </a>
+</td>
+}
+@case ('localisation') {
+<td class="px-6 py-4 whitespace-nowrap">
+    <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1 truncate">
+        <i class="fas fa-map-marker-alt text-xs"></i>
+        {{ candidature().localisation || '-' }}
+    </div>
+</td>
+}
+@case ('typeContrat') {
+<td class="px-6 py-4 whitespace-nowrap align-middle w-40">
+    <div class="relative">
+        @if (isDropdownActive('typeContrat')) {
+        <div
+            class="absolute top-0 left-0 z-50 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border-2 border-gray-200 dark:border-gray-600 min-w-[220px] overflow-hidden animate-fadeIn">
+            @for (type of typesContrat; track type) {
+            <button type="button" (click)="onSaveEdit('typeContrat', type)"
+                class="w-full px-4 py-3 text-left hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 dark:hover:from-primary-900/20 dark:hover:to-primary-800/10 cursor-pointer flex items-center gap-3 transition-all duration-200 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                <span class="px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-transform hover:scale-105"
+                    [class]="getTypeContratBadgeClass(type)">
+                    {{ getTypeContratLabel(type) }}
+                </span>
+                @if (candidature().typeContrat === type) {
+                <i
+                    class="fas fa-check-circle text-primary-600 dark:text-primary-400 ml-auto text-base animate-pulse"></i>
+                }
+            </button>
+            }
+        </div>
+        }
+        <button (click)="onToggleDropdown('typeContrat')"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200 border border-transparent hover:border-current"
+            [class]="getTypeContratBadgeClassSafe(candidature().typeContrat)">
+            {{ getTypeContratLabelSafe(candidature().typeContrat) }}
+        </button>
+    </div>
+</td>
+}
+@case ('dateCandidature') {
+<td class="px-6 py-4 whitespace-nowrap align-middle w-40 text-sm text-gray-600 dark:text-gray-400">
+    <div class="flex flex-col gap-1">
+        <span>{{ formatDate(candidature().dateCandidature) }}</span>
+        <span class="text-xs text-gray-400">{{ candidature().dateCandidature | timeAgo }}</span>
+    </div>
+</td>
+}
+@case ('statut') {
+<td class="px-6 py-4 whitespace-nowrap align-middle w-32">
+    <div class="relative">
+        @if (isDropdownActive('statut')) {
+        <div
+            class="absolute top-0 left-0 z-50 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 min-w-[200px]">
+            @for (statut of statuts; track statut) {
+            <button type="button" (click)="onSaveEdit('statut', statut)"
+                class="w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer flex items-center gap-2">
+                <span class="status-badge" [class]="getStatutBadgeClass(statut)">
+                    {{ getStatutLabel(statut) }}
+                </span>
+                @if (candidature().statut === statut) {
+                <i class="fas fa-check text-primary-600 ml-auto"></i>
+                }
+            </button>
+            }
+        </div>
+        }
+        <button (click)="onToggleDropdown('statut')" class="status-badge cursor-pointer hover:opacity-80"
+            [class]="getStatutBadgeClass(candidature().statut)">
+            {{ getStatutLabel(candidature().statut) }}
+        </button>
+    </div>
+</td>
+}
+@case ('priorite') {
+<td class="px-6 py-4 whitespace-nowrap align-middle w-32">
+    <div class="relative">
+        @if (isDropdownActive('priorite')) {
+        <div
+            class="absolute top-0 left-0 z-50 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 min-w-[200px]">
+            @for (priorite of priorites; track priorite) {
+            <button type="button" (click)="onSaveEdit('priorite', priorite)"
+                class="w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer flex items-center gap-2">
+                <span class="px-2 py-1 rounded-full text-xs font-medium" [class]="getPrioriteBadgeClass(priorite)">
+                    {{ getPrioriteLabel(priorite) }}
+                </span>
+                @if (candidature().priorite === priorite) {
+                <i class="fas fa-check text-primary-600 ml-auto"></i>
+                }
+            </button>
+            }
+        </div>
+        }
+        <button (click)="onToggleDropdown('priorite')"
+            class="px-2 py-1 rounded-full text-xs font-medium cursor-pointer hover:opacity-80"
+            [class]="getPrioriteBadgeClassSafe(candidature().priorite)">
+            {{ getPrioriteLabelSafe(candidature().priorite) }}
+        </button>
+    </div>
+</td>
+}
+@case ('salaire') {
+<td class="px-6 py-4 whitespace-nowrap align-middle w-36">
+    <div class="text-sm text-gray-700 dark:text-gray-300">
+        @if (candidature().salaireMin) {
+        {{ candidature().salaireMin }}{{ candidature().salaireMax ? ' - ' + candidature().salaireMax : '' }} €
+        } @else {
+        -
+        }
+    </div>
+</td>
+}
+@case ('score') {
+<td class="px-6 py-4 whitespace-nowrap align-middle w-32">
+    <div class="flex gap-1 items-center" (mouseleave)="onScoreLeave()">
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+        <button (mouseenter)="onScoreHover(i)" (click)="onScoreClick(i)"
+            class="cursor-pointer hover:scale-125 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 rounded-full p-0.5">
+            <i class="text-lg transition-all duration-200"
+                [class]="i <= getDisplayScore() ? 'fas fa-star text-yellow-500 drop-shadow-lg' : 'far fa-star text-gray-300 dark:text-gray-600 hover:text-yellow-400'"></i>
+        </button>
+        }
+    </div>
+</td>
+}
+@case ('source') {
+<td
+    class="px-6 py-4 whitespace-nowrap align-middle min-w-[120px] text-sm text-gray-600 dark:text-gray-400 truncate max-w-xs">
+    {{ candidature().source || '-' }}
+</td>
+}
+@case ('contact') {
+<td
+    class="px-6 py-4 whitespace-nowrap align-middle min-w-[120px] text-sm text-gray-600 dark:text-gray-400 truncate max-w-xs">
+    {{ candidature().contactNom || '-' }}
+</td>
+}
+@case ('description') {
+<td class="px-6 py-4 align-middle text-sm text-gray-600 dark:text-gray-400">
+    <div class="line-clamp-2">
+        {{ candidature().description || '-' }}
+    </div>
+</td>
+}
+@case ('lienOffre') {
+<td class="px-6 py-4 whitespace-nowrap align-middle">
+    @if (candidature().lienOffre) {
+    <a [href]="candidature().lienOffre" target="_blank" rel="noopener noreferrer"
+        class="text-primary-600 dark:text-primary-400 hover:underline text-sm flex items-center gap-1">
+        <i class="fas fa-external-link-alt text-xs"></i>
+        Voir l'offre
+    </a>
+    } @else {
+    <span class="text-gray-400">-</span>
+    }
+</td>
+}
+@case ('actions') {
+<td class="px-6 py-4 whitespace-nowrap align-middle w-28 text-sm">
+    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <button [routerLink]="['/candidatures', candidature().id]"
+            class="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-white hover:bg-primary-600 dark:hover:bg-primary-500 transition-all duration-200 hover:scale-110 hover:shadow-lg cursor-pointer disabled:cursor-not-allowed"
+            title="Voir les détails">
+            <i class="fas fa-eye text-sm"></i>
+        </button>
+        <button (click)="onArchive()"
+            class="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-white hover:bg-yellow-500 dark:hover:bg-yellow-600 transition-all duration-200 hover:scale-110 hover:shadow-lg cursor-pointer disabled:cursor-not-allowed"
+            [title]="candidature().archivee ? 'Désarchiver' : 'Archiver'">
+            <i [class]="candidature().archivee ? 'fas fa-box-open text-sm' : 'fas fa-archive text-sm'"></i>
+        </button>
+        <button (click)="onDelete()"
+            class="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-white hover:bg-red-600 dark:hover:bg-red-500 transition-all duration-200 hover:scale-110 hover:shadow-lg cursor-pointer disabled:cursor-not-allowed"
+            title="Supprimer">
+            <i class="fas fa-trash text-sm"></i>
+        </button>
+    </div>
+</td>
+}
+@default {
+<td></td>
+}
+}
+}

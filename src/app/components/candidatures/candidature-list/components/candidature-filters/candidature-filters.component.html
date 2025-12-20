@@ -1,0 +1,33 @@
+<div class="card mb-6 backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 shadow-lg relative z-50">
+  <!-- Filtres principaux -->
+  <div class="flex flex-col lg:flex-row gap-4 mb-4">
+    <!-- Recherche -->
+    <div class="flex-[2]">
+      <app-search-bar [searchTerm]="searchTerm()" (searchTermChange)="searchTermChange.emit($event)" />
+    </div>
+
+    <!-- Filtre par statut -->
+    <div class="w-auto flex-[1]">
+      <app-status-filter [selectedStatut]="selectedStatut()" (statutChange)="statutChange.emit($event)" />
+    </div>
+
+    <!-- Filtre par priorité -->
+    <div class="w-auto flex-[1]">
+      <app-priority-filter [selectedPriorite]="selectedPriorite()" (prioriteChange)="prioriteChange.emit($event)" />
+    </div>
+
+    <div class="w-auto flex-[1]">
+      <app-contrat-filter [selectedTypeContrat]="selectedTypeContrat()"
+        (typeContratChange)="typeContratChange.emit($event)" />
+    </div>
+  </div>
+
+  <!-- Filtres avancés -->
+  <app-advanced-filters [selectedScoreMin]="selectedScoreMin()" [selectedScoreMax]="selectedScoreMax()"
+    [dateDebut]="dateDebut()" [dateFin]="dateFin()" [showArchivedCandidatures]="showArchivedCandidatures()"
+    [showNonArchivedCandidatures]="showNonArchivedCandidatures()" [activeFiltersCount]="activeFiltersCount()"
+    (scoreMinChange)="scoreMinChange.emit($event)" (scoreMaxChange)="scoreMaxChange.emit($event)"
+    (dateDebutChange)="dateDebutChange.emit($event)" (dateFinChange)="dateFinChange.emit($event)"
+    (archivedChange)="archivedChange.emit($event)" (nonArchivedChange)="nonArchivedChange.emit($event)"
+    (clearFilters)="clearFilters.emit()" />
+</div>

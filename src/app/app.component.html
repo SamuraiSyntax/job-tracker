@@ -1,0 +1,28 @@
+@if (isAuthenticated()) {
+  <div class="flex flex-col h-screen">
+    <app-header 
+      [currentUser]="currentUser()" 
+      [appTitle]="title()"
+      (toggleMenu)="toggleSidenav()"
+      (logoutClick)="logout()">
+    </app-header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <aside #sidenav class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto" [class.hidden]="!sidenavOpen">
+        <app-sidebar></app-sidebar>
+      </aside>
+
+      <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+        <router-outlet />
+        <app-footer></app-footer>
+      </main>
+    </div>
+    
+    <app-toast />
+    <app-confirmation-modal />
+  </div>
+} @else {
+  <router-outlet />
+  <app-toast />
+  <app-confirmation-modal />
+}

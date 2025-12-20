@@ -1,0 +1,158 @@
+<!-- Bouton et indicateur -->
+<div class="flex flex-wrap items-center gap-3">
+    <!-- Bouton filtres avancés -->
+    <button (click)="toggleAdvancedFilters()" class="btn-outline text-sm cursor-pointer"
+        [class.bg-primary-50]="showAdvancedFilters()" [class.dark:bg-primary-900/20]="showAdvancedFilters()">
+        <i class="fas fa-sliders-h"></i>
+        <span>Filtres avancés</span>
+        @if (showAdvancedFilters()) {
+        <i class="fas fa-chevron-up text-xs"></i>
+        } @else {
+        <i class="fas fa-chevron-down text-xs"></i>
+        }
+    </button>
+
+    <!-- Indicateur de filtres actifs -->
+    @if (activeFiltersCount() > 0) {
+    <div class="flex items-center gap-2">
+        <span
+            class="px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium flex items-center gap-2">
+            <i class="fas fa-filter text-xs"></i>
+            {{ activeFiltersCount() }} filtre(s) actif(s)
+        </span>
+        <button (click)="onClearFilters()" class="btn-outline-danger text-sm cursor-pointer">
+            <i class="fas fa-times"></i>
+            <span class="hidden sm:inline">Effacer</span>
+        </button>
+    </div>
+    }
+</div>
+
+<!-- Panel filtres avancés -->
+@if (showAdvancedFilters()) {
+<div
+    class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 animate-in slide-in-from-top-2 fade-in duration-300">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Filtre par score -->
+        <div class="space-y-3">
+            <div class="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <i class="fas fa-star text-yellow-500"></i>
+                Score
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="score-min-range" class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Minimum</span>
+                        <span
+                            class="text-xs font-bold text-primary-600 dark:text-primary-400 px-2 py-1 bg-primary-50 dark:bg-primary-900/30 rounded-full">
+                            {{ selectedScoreMin() }}
+                        </span>
+                    </label>
+                    <input id="score-min-range" type="range" min="0" max="5" step="1" [value]="selectedScoreMin()"
+                        (input)="onScoreMinChange(+$any($event.target).value)"
+                        class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary-600 dark:accent-primary-400 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" />
+                    <div class="flex justify-between mt-1">
+                        @for (i of [0,1,2,3,4,5]; track i) {
+                        <span class="text-xs text-gray-400" [class.text-primary-600]="selectedScoreMin() === i"
+                            [class.dark:text-primary-400]="selectedScoreMin() === i"
+                            [class.font-bold]="selectedScoreMin() === i">{{ i }}</span>
+                        }
+                    </div>
+                </div>
+                <div>
+                    <label for="score-max-range" class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Maximum</span>
+                        <span
+                            class="text-xs font-bold text-primary-600 dark:text-primary-400 px-2 py-1 bg-primary-50 dark:bg-primary-900/30 rounded-full">
+                            {{ selectedScoreMax() }}
+                        </span>
+                    </label>
+                    <input id="score-max-range" type="range" min="0" max="5" step="1" [value]="selectedScoreMax()"
+                        (input)="onScoreMaxChange(+$any($event.target).value)"
+                        class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary-600 dark:accent-primary-400 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" />
+                    <div class="flex justify-between mt-1">
+                        @for (i of [0,1,2,3,4,5]; track i) {
+                        <span class="text-xs text-gray-400" [class.text-primary-600]="selectedScoreMax() === i"
+                            [class.dark:text-primary-400]="selectedScoreMax() === i"
+                            [class.font-bold]="selectedScoreMax() === i">{{ i }}</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtre par plage de dates -->
+        <div class="space-y-3">
+            <div class="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <i class="fas fa-calendar-alt text-blue-500"></i>
+                Période
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label for="date-debut" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+                        Début
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input id="date-debut" type="date" [value]="dateDebut()"
+                            (input)="onDateDebutChange($any($event.target).value)"
+                            class="input pl-10 w-full cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 transition-all" />
+                    </div>
+                </div>
+                <div>
+                    <label for="date-fin" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
+                        Fin
+                    </label>
+                    <div class="relative">
+                        <i
+                            class="fas fa-calendar-check absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input id="date-fin" type="date" [value]="dateFin()"
+                            (input)="onDateFinChange($any($event.target).value)"
+                            class="input pl-10 w-full cursor-pointer hover:border-primary-400 dark:hover:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 transition-all" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Options supplémentaires -->
+        <div class="space-y-3">
+            <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <i class="fas fa-cog text-gray-500"></i>
+                Options
+            </label>
+            <label
+                class="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/30 cursor-pointer transition-all group">
+                <input type="checkbox" [checked]="showNonArchivedCandidatures()"
+                    (change)="onNonArchivedChange($any($event.target).checked)"
+                    class="w-5 h-5 text-primary-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 cursor-pointer" />
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <i
+                            class="fas fa-inbox text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors"></i>
+                        <span
+                            class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                            Afficher non archivées
+                        </span>
+                    </div>
+                </div>
+            </label>
+            <label
+                class="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/30 cursor-pointer transition-all group">
+                <input type="checkbox" [checked]="showArchivedCandidatures()"
+                    (change)="onArchivedChange($any($event.target).checked)"
+                    class="w-5 h-5 text-primary-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 cursor-pointer" />
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <i
+                            class="fas fa-archive text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors"></i>
+                        <span
+                            class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                            Afficher archivées
+                        </span>
+                    </div>
+                </div>
+            </label>
+        </div>
+    </div>
+</div>
+}

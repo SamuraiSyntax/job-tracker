@@ -1,0 +1,125 @@
+<div [formGroup]="form"
+    class="card border-l-4 border-amber-500 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-300 animate-fadeIn">
+    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
+            <i class="fas fa-money-bill-wave text-amber-600 dark:text-amber-400"></i>
+        </div>
+        <div>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Conditions</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Rémunération et modalités de travail</p>
+        </div>
+    </div>
+
+    <div class="space-y-5">
+        <!-- Type de rémunération -->
+        <div class="group">
+            <label for="typeRemuneration" class="form-label flex items-center gap-2">
+                <i class="fas fa-calendar-alt text-amber-500 text-sm"></i>
+                <span>Type de rémunération</span>
+            </label>
+            <div class="relative">
+                <select id="typeRemuneration" formControlName="typeRemuneration"
+                    class="form-input pl-11 transition-all duration-200 focus:ring-2 focus:ring-amber-500">
+                    <option [ngValue]="null">-- Sélectionner un type --</option>
+                    @for (type of typesRemuneration; track type) {
+                    <option [ngValue]="type">{{ getTypeRemunerationLabel(type) }}</option>
+                    }
+                </select>
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <i class="fas fa-calendar-alt"></i>
+                </span>
+            </div>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                <i class="fas fa-info-circle mr-1"></i>
+                Période de calcul du salaire (annuel, mensuel ou horaire)
+            </p>
+        </div>
+
+        <!-- Salaires min/max -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Salaire min -->
+            <div class="group">
+                <label for="salaireMin" class="form-label flex items-center gap-2">
+                    <i class="fas fa-euro-sign text-amber-500 text-sm"></i>
+                    <span>Salaire minimum (€)</span>
+                </label>
+                <div class="relative">
+                    <input id="salaireMin" type="number" formControlName="salaireMin"
+                        class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-amber-500"
+                        placeholder="Ex: 35000" min="0">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-amber-500 group-focus-within:left-4">
+                        <i class="fas fa-euro-sign"></i>
+                    </span>
+                </div>
+                <app-form-field-error [control]="form.get('salaireMin')" fieldName="Le salaire minimum" />
+            </div>
+
+            <!-- Salaire max -->
+            <div class="group">
+                <label for="salaireMax" class="form-label flex items-center gap-2">
+                    <i class="fas fa-euro-sign text-amber-500 text-sm"></i>
+                    <span>Salaire maximum (€)</span>
+                </label>
+                <div class="relative">
+                    <input id="salaireMax" type="number" formControlName="salaireMax"
+                        class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-amber-500"
+                        placeholder="Ex: 50000" min="0">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-amber-500 group-focus-within:left-4">
+                        <i class="fas fa-euro-sign"></i>
+                    </span>
+                </div>
+                <app-form-field-error [control]="form.get('salaireMax')" fieldName="Le salaire maximum" />
+            </div>
+        </div>
+
+        <!-- Type de télétravail -->
+        <div class="group">
+            <label for="typeTeletravail" class="form-label flex items-center gap-2">
+                <i class="fas fa-home text-amber-500 text-sm"></i>
+                <span>Télétravail</span>
+            </label>
+            <div class="relative">
+                <select id="typeTeletravail" formControlName="typeTeletravail"
+                    class="form-input pl-11 transition-all duration-200 focus:ring-2 focus:ring-amber-500">
+                    <option [ngValue]="null">-- Sélectionner une option --</option>
+                    @for (type of typesTeletravail; track type) {
+                    <option [ngValue]="type">{{ getTypeTeletravailLabel(type) }}</option>
+                    }
+                </select>
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <i class="fas fa-home"></i>
+                </span>
+            </div>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                <i class="fas fa-info-circle mr-1"></i>
+                Modalité de télétravail pour ce poste
+            </p>
+        </div>
+
+        <!-- Jours de télétravail par semaine (conditionnel) -->
+        @if (showJoursTeletravail()) {
+        <div class="group animate-fadeIn">
+            <label for="joursTeletravailParSemaine" class="form-label flex items-center gap-2">
+                <i class="fas fa-calendar-week text-amber-500 text-sm"></i>
+                <span>Jours de télétravail par semaine</span>
+            </label>
+            <div class="relative">
+                <input id="joursTeletravailParSemaine" type="number" formControlName="joursTeletravailParSemaine"
+                    class="form-input pl-11 transition-all duration-200 focus:pl-12 focus:ring-2 focus:ring-amber-500"
+                    placeholder="Ex: 2" min="1" max="5">
+                <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all duration-200 group-focus-within:text-amber-500 group-focus-within:left-4">
+                    <i class="fas fa-calendar-week"></i>
+                </span>
+            </div>
+            <app-form-field-error [control]="form.get('joursTeletravailParSemaine')" fieldName="Le nombre de jours" />
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                <i class="fas fa-info-circle mr-1"></i>
+                Nombre de jours télétravaillés par semaine (entre 1 et 5)
+            </p>
+        </div>
+        }
+    </div>
+</div>

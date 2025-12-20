@@ -1,0 +1,21 @@
+@if (control() && control()!.invalid && (control()!.dirty || control()!.touched)) {
+<div class="text-sm text-red-600 dark:text-red-400 mt-1">
+  @if (control()!.hasError('required')) {
+  <span>{{ fieldName() }} est requis</span>
+  }
+  @if (control()!.hasError('email')) {
+  <span>Email invalide</span>
+  }
+  @if (control()!.hasError('minlength')) {
+  <span>{{ fieldName() }} doit contenir au moins {{ control()!.getError('minlength').requiredLength }} caractères</span>
+  }
+  @if (control()!.hasError('maxlength')) {
+  <span>{{ fieldName() }} ne doit pas dépasser {{ control()!.getError('maxlength').requiredLength }} caractères</span>
+  }
+  @if (customErrors() && control()!.errors) {
+  @for (error of getCustomErrors(); track error.key) {
+  <span>{{ error.message }}</span>
+  }
+  }
+</div>
+}

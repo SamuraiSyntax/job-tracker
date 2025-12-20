@@ -1,0 +1,106 @@
+<div class="max-w-7xl mx-auto p-6">
+  <!-- Header -->
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3 mb-2">
+        <i class="fas fa-briefcase text-primary-600 dark:text-primary-400"></i>
+        Mes Candidatures
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400">
+        {{ filteredCandidatures().length }} candidature(s)
+        @if (candidatures().length !== filteredCandidatures().length) {
+        sur {{ candidatures().length }}
+        }
+      </p>
+    </div>
+    <div class="flex gap-3">
+
+      <button (click)="viewMode.set('table')" [class.bg-primary-100]="viewMode() === 'table'"
+        class="btn-outline cursor-pointer flex items-center gap-2" aria-label="Vue tableau">
+        <i class="fas fa-table"></i>
+        Tableau
+      </button>
+      <button (click)="viewMode.set('grid')" [class.bg-primary-100]="viewMode() === 'grid'"
+        class="btn-outline cursor-pointer flex items-center gap-2" aria-label="Vue cartes">
+        <i class="fas fa-th-large"></i>
+        Cartes
+      </button>
+
+      <app-column-selector [visibleColumns]="visibleColumnsSet()" [availableColumns]="availableColumns()"
+        (toggleColumn)="toggleColumn($event)" (showAllColumns)="showAllColumns()"
+        (hideAllColumns)="hideAllOptionalColumns()" (columnsReordered)="onColumnsReordered($event)" />
+      <button routerLink="/stats" class="btn-outline cursor-pointer">
+        <i class="fas fa-chart-bar"></i>
+        Statistiques
+      </button>
+      <button routerLink="/candidatures/new" class="btn-primary cursor-pointer">
+        <i class="fas fa-plus"></i>
+        Nouvelle candidature
+      </button>
+    </div>
+  </div>
+
+  <!-- Composant Filtres -->
+  <app-candidature-filters [searchTerm]="searchTerm()" [selectedStatut]="selectedStatut()"
+    [selectedPriorite]="selectedPriorite()" [selectedTypeContrat]="selectedTypeContrat()"
+    [selectedScoreMin]="selectedScoreMin()" [selectedScoreMax]="selectedScoreMax()" [dateDebut]="dateDebut()"
+    [dateFin]="dateFin()" [showArchivedCandidatures]="showArchived()" [showNonArchivedCandidatures]="showNonArchived()"
+    [activeFiltersCount]="activeFiltersCount()" (searchTermChange)="searchTerm.set($event)"
+    (statutChange)="selectedStatut.set($event)" (prioriteChange)="selectedPriorite.set($event)"
+    (typeContratChange)="selectedTypeContrat.set($event)" (scoreMinChange)="selectedScoreMin.set($event)"
+    (scoreMaxChange)="selectedScoreMax.set($event)" (dateDebutChange)="dateDebut.set($event)"
+    (dateFinChange)="dateFin.set($event)" (archivedChange)="showArchived.set($event)"
+    (nonArchivedChange)="showNonArchived.set($event)" (clearFilters)="clearFilters()" />
+
+  <!-- Chips des filtres actifs -->
+  @if (hasActiveFilters()) {
+  <app-filter-chips [filters]="filterChipsData()" (clearSearch)="searchTerm.set('')"
+    (clearStatut)="selectedStatut.set('')" (clearPriorite)="selectedPriorite.set('')"
+    (clearTypeContrat)="selectedTypeContrat.set('')" (clearScore)="selectedScoreMin.set(0); selectedScoreMax.set(5)"
+    (clearDateDebut)="dateDebut.set('')" (clearDateFin)="dateFin.set('')" />
+  }
+
+  <!-- États de chargement et erreur -->
+  @if (isLoading()) {
+  <app-loading-spinner message="Chargement des candidatures..." [fullscreen]="true" />
+  } @else if (errorMessage()) {
+  <app-error-card title="Erreur de chargement" [message]="errorMessage()!" (retry)="loadCandidatures()" />
+  } @else if (candidatures().length === 0) {
+  <app-empty-state title="Aucune candidature"
+    message="Vous n'avez pas encore créé de candidature. Commencez dès maintenant à suivre vos opportunités professionnelles !"
+    icon="work_off" actionLabel="Créer une candidature" actionIcon="add"
+    (action)="router.navigate(['/candidatures/new'])" />
+  } @else if (filteredCandidatures().length === 0) {
+  <div class="card text-center py-16 animate-in fade-in duration-200">
+    <div class="max-w-md mx-auto">
+      <div
+        class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center">
+        <i class="fas fa-search text-4xl text-gray-400"></i>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Aucun résultat trouvé</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-6">
+        Aucune candidature ne correspond à vos critères de recherche
+      </p>
+      <button (click)="clearFilters()"
+        class="btn-primary cursor-pointer inline-flex items-center gap-2 hover:scale-105 transition-transform">
+        <i class="fas fa-times"></i>
+        Effacer les filtres
+      </button>
+    </div>
+  </div>
+  } @else {
+  @if (viewMode() === 'grid') {
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4 animate-in fade-in duration-200">
+    @for (candidature of filteredCandidatures(); track candidature.id) {
+    <app-candidature-card [candidature]="candidature" (onArchive)="onArchive($event)"
+      (onDeleteFromTable)="onDeleteFromTable($event)">
+    </app-candidature-card>
+    }
+  </div>
+  } @else {
+  <!-- Composant Table -->
+  <app-candidature-table [candidatures]="filteredCandidatures()" [visibleColumns]="visibleColumns()"
+    [sortColumn]="sortColumn()" [sortDirection]="sortDirection()" (sort)="onSort($event)" (edit)="onEdit($event)"
+    (delete)="onDeleteFromTable($event)" (view)="viewDetails($event)" (archive)="onArchive($event)" />
+  } }
+</div>

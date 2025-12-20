@@ -1,0 +1,143 @@
+<div [formGroup]="form"
+    class="card border-l-4 border-blue-500 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-300 animate-fadeIn">
+    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+            <i class="fas fa-calendar-check text-blue-600 dark:text-blue-400"></i>
+        </div>
+        <div>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Dates et statut</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Suivi temporel de la candidature</p>
+        </div>
+        <div class="ml-auto flex items-center gap-2">
+            <span class="text-xs font-medium px-2 py-1 rounded-full" [class]="form.get('dateCandidature')?.valid && form.get('statut')?.valid 
+                  ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'">
+                <i class="fas fa-asterisk mr-1"></i>Requis
+            </span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Date candidature -->
+        <div class="group">
+            <label for="dateCandidature" class="form-label flex items-center gap-2">
+                <i class="fas fa-calendar-alt text-blue-500 text-sm"></i>
+                <span>Date de candidature</span>
+                <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+                <input id="dateCandidature" type="date" formControlName="dateCandidature"
+                    class="form-input pl-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500">
+                <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors duration-200 group-focus-within:text-blue-500">
+                    <i class="fas fa-calendar-alt"></i>
+                </span>
+            </div>
+            <app-form-field-error [control]="form.get('dateCandidature')" fieldName="La date" />
+        </div>
+
+        <!-- Dernier contact -->
+        <div class="group">
+            <label for="dateDernierContact" class="form-label flex items-center gap-2">
+                <i class="fas fa-clock text-blue-500 text-sm"></i>
+                <span>Dernier contact</span>
+            </label>
+            <div class="relative">
+                <input id="dateDernierContact" type="date" formControlName="dateDernierContact"
+                    class="form-input pl-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500">
+                <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors duration-200 group-focus-within:text-blue-500">
+                    <i class="fas fa-clock"></i>
+                </span>
+            </div>
+        </div>
+
+        <!-- Relance prévue -->
+        <div class="group">
+            <label for="dateRelancePrevue" class="form-label flex items-center gap-2">
+                <i class="fas fa-bell text-blue-500 text-sm"></i>
+                <span>Relance prévue</span>
+            </label>
+            <div class="relative">
+                <input id="dateRelancePrevue" type="date" formControlName="dateRelancePrevue"
+                    class="form-input pl-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500">
+                <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors duration-200 group-focus-within:text-blue-500">
+                    <i class="fas fa-bell"></i>
+                </span>
+            </div>
+        </div>
+
+        <!-- Statut -->
+        <div class="group">
+            <label for="statut" class="form-label flex items-center gap-2">
+                <i class="fas fa-flag text-blue-500 text-sm"></i>
+                <span>Statut</span>
+                <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+                <select id="statut" formControlName="statut"
+                    class="form-input pl-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500">
+                    @for (statut of statuts; track statut) {
+                    <option [value]="statut">{{ getStatutLabel(statut) }}</option>
+                    }
+                </select>
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <i class="fas fa-flag"></i>
+                </span>
+            </div>
+            <app-form-field-error [control]="form.get('statut')" fieldName="Le statut" />
+        </div>
+
+        <!-- Priorité -->
+        <div class="group">
+            <label for="priorite" class="form-label flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle text-blue-500 text-sm"></i>
+                <span>Priorité</span>
+            </label>
+            <div class="relative">
+                <select id="priorite" formControlName="priorite"
+                    class="form-input pl-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500">
+                    <option [ngValue]="null">-- Sélectionner une priorité --</option>
+                    @for (priorite of priorites; track priorite) {
+                    <option [ngValue]="priorite">{{ getPrioriteLabel(priorite) }}</option>
+                    }
+                </select>
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </span>
+            </div>
+        </div>
+
+        <!-- Score -->
+        <div class="group">
+            <label for="score" class="form-label flex items-center gap-2">
+                <i class="fas fa-star text-blue-500 text-sm"></i>
+                <span>Score (1-5)</span>
+            </label>
+            <div class="relative">
+                <input id="score" type="number" formControlName="score"
+                    class="form-input pl-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500" min="1"
+                    max="5" placeholder="1-5">
+                <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors duration-200 group-focus-within:text-blue-500">
+                    <i class="fas fa-star"></i>
+                </span>
+            </div>
+            <app-form-field-error [control]="form.get('score')" fieldName="Le score" />
+        </div>
+    </div>
+
+    <!-- Checkboxes archivee -->
+    <div class="mt-5 flex items-center gap-4">
+        <label for="archivee" class="flex items-center gap-2 cursor-pointer group">
+            <input id="archivee" type="checkbox" formControlName="archivee"
+                class="form-checkbox text-blue-600 focus:ring-blue-500">
+            <span
+                class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <i class="fas fa-archive mr-1"></i>
+                Archiver cette candidature
+            </span>
+        </label>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="flex items-center gap-2 flex-wrap">
+    <span class="text-xs text-gray-500 dark:text-gray-400 font-semibold flex items-center gap-1">
+        <i class="fas fa-filter"></i>
+        Filtres actifs:
+    </span>
+
+    @if (filters().searchTerm) {
+    <span
+        class="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-xs font-medium">
+        <i class="fas fa-search"></i>
+        "{{ filters().searchTerm }}"
+        <button (click)="clearSearch.emit()" class="ml-1 cursor-pointer hover:text-red-600">
+            <i class="fas fa-times"></i>
+        </button>
+    </span>
+    }
+
+    @if (filters().selectedStatut) {
+    <span class="status-badge text-xs" [class]="getStatutBadgeClass(filters().selectedStatut)">
+        {{ filters().selectedStatut }}
+        <button (click)="clearStatut.emit()" class="ml-1 cursor-pointer hover:opacity-70">
+            <i class="fas fa-times"></i>
+        </button>
+    </span>
+    }
+
+    @if (filters().selectedPriorite) {
+    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium"
+        [class]="getPrioriteBadgeClass(filters().selectedPriorite)">
+        <i class="fas fa-flag"></i>
+        {{ getPrioriteLabelSafe(filters().selectedPriorite) }}
+        <button (click)="clearPriorite.emit()" class="ml-1 cursor-pointer hover:opacity-70">
+            <i class="fas fa-times"></i>
+        </button>
+    </span>
+    }
+
+    @if (filters().selectedTypeContrat) {
+    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium"
+        [class]="getTypeContratBadgeClass(filters().selectedTypeContrat)">
+        <i class="fas fa-file-contract"></i>
+        {{ getTypeContratLabelSafe(filters().selectedTypeContrat) }}
+        <button (click)="clearTypeContrat.emit()" class="ml-1 cursor-pointer hover:opacity-70">
+            <i class="fas fa-times"></i>
+        </button>
+    </span>
+    }
+
+    @if (filters().selectedScoreMin > 0 || filters().selectedScoreMax < 5) { <span
+        class="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-xs font-medium">
+        <i class="fas fa-star"></i>
+        Score: {{ filters().selectedScoreMin }} - {{ filters().selectedScoreMax }}
+        <button (click)="clearScore.emit()" class="ml-1 cursor-pointer hover:text-red-600">
+            <i class="fas fa-times"></i>
+        </button>
+        </span>
+        }
+
+        @if (filters().dateDebut) {
+        <span
+            class="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
+            <i class="fas fa-calendar-alt"></i>
+            Depuis: {{ filters().dateDebut }}
+            <button (click)="clearDateDebut.emit()" class="ml-1 cursor-pointer hover:text-red-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </span>
+        }
+
+        @if (filters().dateFin) {
+        <span
+            class="inline-flex items-center gap-1 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-xs font-medium">
+            <i class="fas fa-calendar-check"></i>
+            Jusqu'à: {{ filters().dateFin }}
+            <button (click)="clearDateFin.emit()" class="ml-1 cursor-pointer hover:text-red-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </span>
+        }
+</div>

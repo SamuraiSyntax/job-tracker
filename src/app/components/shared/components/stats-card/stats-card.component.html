@@ -1,0 +1,16 @@
+<div class="card" [class.cursor-pointer]="clickable()" [class.hover:shadow-lg]="clickable()" [class.transition-shadow]="clickable()">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ title() }}</h3>
+    @if (icon()) {
+      <i [class]="icon() + ' text-2xl'" [style.color]="iconColor()"></i>
+    }
+  </div>
+  <div class="space-y-2">
+    <p class="text-3xl font-bold text-gray-900 dark:text-white" [ngClass]="valueClass()">
+      {{ value() }}
+    </p>
+    @if (subtitle()) {
+      <p class="text-sm text-gray-500 dark:text-gray-400">{{ subtitle() }}</p>
+    }
+  </div>
+</div>

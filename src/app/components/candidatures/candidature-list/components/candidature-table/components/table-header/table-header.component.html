@@ -1,0 +1,28 @@
+<tr>
+  @for (column of columns(); track column.key) {
+    <th 
+        scope="col"
+        class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b-2 border-gray-300 dark:border-gray-600 transition-all duration-200"
+        [class.w-20]="column.key === 'id'"
+        [class.w-40]="column.key === 'typeContrat' || column.key === 'dateCandidature'"
+        [class.w-32]="column.key === 'statut' || column.key === 'priorite' || column.key === 'score'"
+        [class.w-36]="column.key === 'salaire'"
+        [class.w-28]="column.key === 'actions'"
+        [class.min-w-[150px]]="column.key === 'entreprise' || column.key === 'poste'"
+        [class.min-w-[120px]]="column.key === 'localisation' || column.key === 'source' || column.key === 'contact'"
+        [class.cursor-pointer]="column.sortable"
+        [class.hover:bg-gray-100]="column.sortable"
+        [class.dark:hover:bg-gray-700/50]="column.sortable"
+        [class.hover:text-primary-600]="column.sortable"
+        [class.dark:hover:text-primary-400]="column.sortable"
+        (click)="onColumnClick(column)"
+      >
+        <div class="flex items-center gap-1.5">
+          <span>{{ column.label }}</span>
+          @if (column.sortable) {
+            <i class="fas text-[10px] transition-all duration-200" [class]="getSortIcon(column.key)"></i>
+          }
+        </div>
+    </th>
+  }
+</tr>

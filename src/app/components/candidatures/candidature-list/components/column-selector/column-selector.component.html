@@ -1,0 +1,78 @@
+<div class="relative">
+  <!-- Bouton pour ouvrir le sélecteur de colonnes -->
+  <button (click)="toggleColumnSelector()"
+    class="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all shadow-sm cursor-pointer disabled:cursor-not-allowed"
+    [class.ring-2]="showColumnSelector()" [class.ring-blue-500]="showColumnSelector()">
+    <i class="fas fa-columns text-gray-600 dark:text-gray-400"></i>
+    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Colonnes</span>
+    @if (getVisibleColumnCount() > 0) {
+    <span
+      class="px-2 py-0.5 text-xs font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded-full">
+      {{ getVisibleColumnCount() }}
+    </span>
+    }
+    <i class="fas fa-chevron-down text-xs transition-transform" [class.rotate-180]="showColumnSelector()"></i>
+  </button>
+
+  <!-- Dropdown du sélecteur de colonnes -->
+  @if (showColumnSelector()) {
+  <div
+    class="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-[9999]">
+    <!-- Header avec recherche -->
+    <div class="p-3 border-b border-gray-200 dark:border-gray-700">
+      <div class="relative">
+        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+        <input type="text" [value]="searchColumnTerm()" (input)="updateSearchTerm($any($event.target).value)"
+          placeholder="Rechercher une colonne..."
+          class="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+    </div>
+
+    <!-- Liste des colonnes -->
+    <div class="max-h-96 overflow-y-auto p-2">
+      @for (column of getFilteredColumns(); let i = $index; track column.key) {
+      <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg group transition-colors cursor-move select-none"
+        draggable="true" (dragstart)="onDragStart(i, $event)" (dragover)="onDragOver(i, $event)"
+        (drop)="onDrop(i, $event)" (dragend)="onDragEnd()" [class.bg-primary-50]="dragOverIndex === i"
+        [attr.aria-grabbed]="draggedIndex === i" [attr.tabindex]="0"
+        [attr.aria-dropeffect]="draggedIndex !== null ? 'move' : null">
+        <span class="fas fa-grip-lines text-gray-400 mr-1 cursor-move"></span>
+        <input type="checkbox" [id]="'col-checkbox-' + column.key" [checked]="isColumnVisible(column.key)"
+          (change)="onToggleColumn(column.key)"
+          class="w-4 h-4 text-blue-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2 cursor-pointer" />
+        <label [for]="'col-checkbox-' + column.key"
+          class="flex-1 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 cursor-pointer">
+          {{ column.label }}
+        </label>
+      </div>
+      }
+      @if (getFilteredColumns().length === 0) {
+      <div class="px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p>Aucune colonne trouvée</p>
+      </div>
+      }
+    </div>
+
+    <!-- Footer avec actions -->
+    <div class="p-3 border-t border-gray-200 dark:border-gray-700 flex gap-2">
+      <button (click)="onShowAllColumns()"
+        class="flex-1 px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed">
+        <i class="fas fa-check-double mr-1.5"></i>
+        Tout afficher
+      </button>
+      <button (click)="onHideAllColumns()"
+        class="flex-1 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed">
+        <i class="fas fa-times mr-1.5"></i>
+        Tout masquer
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- Backdrop pour fermer le dropdown -->
+  @if (showColumnSelector()) {
+  <div class="fixed inset-0 z-[9998]" (click)="closeColumnSelector()" (keyup.enter)="closeColumnSelector()"
+    (keydown.space)="closeColumnSelector()" tabindex="0" role="button" aria-label="Fermer le sélecteur de colonnes">
+  </div>
+  }
+</div>
