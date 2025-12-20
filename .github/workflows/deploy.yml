@@ -33,7 +33,7 @@ jobs:
           sed -i "s|apiUrl: '/api'|apiUrl: '${API_URL}'|" src/environments/environment.ts
 
       - name: Build Angular app
-        run: pnpm run build -- --base-href /job-tracker/
+        run: pnpm run build --base-href /job-tracker/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
