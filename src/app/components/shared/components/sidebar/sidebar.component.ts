@@ -42,7 +42,7 @@ export class SidebarComponent {
     {
       label: 'GitHub',
       icon: 'fab fa-github',
-      href: 'https://github.com',
+      href: 'https://github.com/SamuraiSyntax/job-tracker',
       target: '_blank',
       description: 'Code source du projet'
     }

@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ViewChild, ElementRef, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +20,75 @@ export class TableRowComponent {
     activeDropdown = input<{ candidatureId: number; field: string } | null>(null);
     hoveredScore = input<{ candidatureId: number; score: number } | null>(null);
 
+    // Refs pour les boutons dropdown
+    @ViewChild('typeContratBtn', { read: ElementRef }) typeContratBtn?: ElementRef;
+    @ViewChild('statutBtn', { read: ElementRef }) statutBtn?: ElementRef;
+    @ViewChild('prioriteBtn', { read: ElementRef }) prioriteBtn?: ElementRef;
+    @ViewChild('dropdownTypeContrat', { read: ElementRef }) dropdownTypeContrat?: ElementRef;
+    @ViewChild('dropdownStatut', { read: ElementRef }) dropdownStatut?: ElementRef;
+    @ViewChild('dropdownPriorite', { read: ElementRef }) dropdownPriorite?: ElementRef;
+
+    // Signaux pour la position et la hauteur des dropdowns
+    private dropdownStyle = {
+        typeContrat: signal<{ top: string; left: string; transform?: string }>({ top: '0px', left: '0px' }),
+        statut: signal<{ top: string; left: string; transform?: string }>({ top: '0px', left: '0px' }),
+        priorite: signal<{ top: string; left: string; transform?: string }>({ top: '0px', left: '0px' })
+    };
+    private dropdownHeight = {
+        typeContrat: signal<number>(240),
+        statut: signal<number>(240),
+        priorite: signal<number>(240)
+    };
+
+    // Effet pour recalculer la position quand le dropdown s'ouvre
+    constructor() {
+        effect(() => {
+            if (this.isDropdownActive('typeContrat')) this.updateDropdownPosition('typeContrat');
+            if (this.isDropdownActive('statut')) this.updateDropdownPosition('statut');
+            if (this.isDropdownActive('priorite')) this.updateDropdownPosition('priorite');
+        });
+    }
+
+    // Met à jour la position et la hauteur du dropdown
+    private updateDropdownPosition(field: 'typeContrat' | 'statut' | 'priorite') {
+        let btnRef: ElementRef | undefined;
+        let dropdownRef: ElementRef | undefined;
+        if (field === 'typeContrat') {
+            btnRef = this.typeContratBtn;
+            dropdownRef = this.dropdownTypeContrat;
+        }
+        if (field === 'statut') {
+            btnRef = this.statutBtn;
+            dropdownRef = this.dropdownStatut;
+        }
+        if (field === 'priorite') {
+            btnRef = this.prioriteBtn;
+            dropdownRef = this.dropdownPriorite;
+        }
+        if (!btnRef) return;
+        const rect = btnRef.nativeElement.getBoundingClientRect();
+        let dropdownHeight = 240;
+        if (dropdownRef && dropdownRef.nativeElement) {
+            dropdownHeight = dropdownRef.nativeElement.offsetHeight || 240;
+        }
+        this.dropdownHeight[field].set(dropdownHeight);
+        const spaceBelow = window.innerHeight - rect.bottom;
+        let top = rect.bottom + window.scrollY;
+        let left = rect.left + window.scrollX;
+        let transform = undefined;
+        if (spaceBelow < dropdownHeight && rect.top > dropdownHeight) {
+            top = rect.top + window.scrollY - dropdownHeight;
+            transform = 'translateY(-8px)';
+        } else {
+            transform = 'translateY(8px)';
+        }
+        this.dropdownStyle[field].set({ top: top + 'px', left: left + 'px', transform });
+    }
+
+    // Renvoie le style du dropdown depuis le signal
+    getDropdownPosition(field: 'typeContrat' | 'statut' | 'priorite') {
+        return this.dropdownStyle[field]();
+    }
     // Outputs
     edit = output<{ field: string; value: unknown }>();
     delete = output<void>();
@@ -80,7 +149,10 @@ export class TableRowComponent {
         this.cancelEdit.emit();
     }
 
-    onToggleDropdown(field: string): void {
+    onToggleDropdown(field: 'typeContrat' | 'statut' | 'priorite'): void {
+        setTimeout(() => {
+            this.updateDropdownPosition(field);
+        }, 0);
         this.toggleDropdown.emit(field);
     }
 

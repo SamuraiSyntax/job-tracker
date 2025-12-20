@@ -9,11 +9,9 @@ import { LoadingSpinnerComponent, ErrorCardComponent, EmptyStateComponent } from
 import { sortByKey, SortOrder } from '@core/utils';
 import { CandidatureFiltersComponent } from './components/candidature-filters/candidature-filters.component';
 import { FilterChipsComponent } from './components/filter-chips/filter-chips.component';
-import { ColumnSelectorComponent } from './components/column-selector/column-selector.component';
 import { CandidatureTableComponent } from './components/candidature-table/candidature-table.component';
 import { CandidatureCardComponent } from './components/candidature-card/candidature-card.component';
 import { getStatutBadgeClass, getStatutLabel, getPrioriteBadgeClass, getPrioriteLabel, getTypeContratBadgeClass, getTypeContratLabel } from '@core/utils/index';
-import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
 
 @Component({
   selector: 'app-candidature-list',
@@ -26,9 +24,8 @@ import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
     EmptyStateComponent,
     CandidatureFiltersComponent,
     FilterChipsComponent,
-    ColumnSelectorComponent,
     CandidatureTableComponent,
-    CandidatureCardComponent 
+    CandidatureCardComponent
   ],
   templateUrl: './candidature-list.component.html'
 })
@@ -98,7 +95,7 @@ export class CandidatureListComponent {
   selectedTypeContrat = signal<TypeContrat | ''>('');
   selectedScoreMin = signal<number>(0);
   selectedScoreMax = signal<number>(5);
-  showArchived = signal<boolean>(false);   
+  showArchived = signal<boolean>(false);
   showNonArchived = signal<boolean>(true);
   dateDebut = signal<string>('');
   dateFin = signal<string>('');
@@ -434,28 +431,28 @@ export class CandidatureListComponent {
   }
 
   // Archivage depuis le composant table
-onArchive(id: number): void {
-  const candidature = this.candidatures().find(c => c.id === id);
-  if (!candidature) return;
+  onArchive(id: number): void {
+    const candidature = this.candidatures().find(c => c.id === id);
+    if (!candidature) return;
 
-  const updatedCandidature = { ...candidature, archivee: !candidature.archivee };
+    const updatedCandidature = { ...candidature, archivee: !candidature.archivee };
 
-  this.candidatureService.updateCandidature(id, updatedCandidature)
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe({
-      next: (updated) => {
-        this.notificationService.success(
-          candidature.archivee ? 'Candidature désarchivée' : 'Candidature archivée'
-        );
-        // Mise à jour locale, pas de reload global
-        this.updateCandidatureLocally(updated);
-      },
-      error: (error) => {
-        console.error('Erreur lors de l\'archivage', error);
-        this.notificationService.error('Erreur lors de l\'archivage');
-      }
-    });
-}
+    this.candidatureService.updateCandidature(id, updatedCandidature)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (updated) => {
+          this.notificationService.success(
+            candidature.archivee ? 'Candidature désarchivée' : 'Candidature archivée'
+          );
+          // Mise à jour locale, pas de reload global
+          this.updateCandidatureLocally(updated);
+        },
+        error: (error) => {
+          console.error('Erreur lors de l\'archivage', error);
+          this.notificationService.error('Erreur lors de l\'archivage');
+        }
+      });
+  }
 
   // Handler pour la suppression depuis le composant table
   onDeleteFromTable(id: number): void {

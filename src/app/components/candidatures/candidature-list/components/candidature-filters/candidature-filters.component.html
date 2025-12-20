@@ -1,4 +1,4 @@
-<div class="card mb-6 backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 shadow-lg relative z-50">
+<div class="card mb-6 backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 shadow-lg relative z-40">
   <!-- Filtres principaux -->
   <div class="flex flex-col lg:flex-row gap-4 mb-4">
     <!-- Recherche -->
@@ -22,12 +22,18 @@
     </div>
   </div>
 
-  <!-- Filtres avancés -->
-  <app-advanced-filters [selectedScoreMin]="selectedScoreMin()" [selectedScoreMax]="selectedScoreMax()"
-    [dateDebut]="dateDebut()" [dateFin]="dateFin()" [showArchivedCandidatures]="showArchivedCandidatures()"
-    [showNonArchivedCandidatures]="showNonArchivedCandidatures()" [activeFiltersCount]="activeFiltersCount()"
-    (scoreMinChange)="scoreMinChange.emit($event)" (scoreMaxChange)="scoreMaxChange.emit($event)"
-    (dateDebutChange)="dateDebutChange.emit($event)" (dateFinChange)="dateFinChange.emit($event)"
-    (archivedChange)="archivedChange.emit($event)" (nonArchivedChange)="nonArchivedChange.emit($event)"
-    (clearFilters)="clearFilters.emit()" />
+  <div class="flex flex-col justify-between lg:flex-row gap-4">
+    <!-- Filtres avancés -->
+    <app-advanced-filters [selectedScoreMin]="selectedScoreMin()" [selectedScoreMax]="selectedScoreMax()"
+      [dateDebut]="dateDebut()" [dateFin]="dateFin()" [showArchivedCandidatures]="showArchivedCandidatures()"
+      [showNonArchivedCandidatures]="showNonArchivedCandidatures()" [activeFiltersCount]="activeFiltersCount()"
+      (scoreMinChange)="scoreMinChange.emit($event)" (scoreMaxChange)="scoreMaxChange.emit($event)"
+      (dateDebutChange)="dateDebutChange.emit($event)" (dateFinChange)="dateFinChange.emit($event)"
+      (archivedChange)="archivedChange.emit($event)" (nonArchivedChange)="nonArchivedChange.emit($event)"
+      (clearFilters)="clearFilters.emit()" />
+
+    <app-column-selector [visibleColumns]="visibleColumnsSet()" [availableColumns]="availableColumns()"
+      (toggleColumn)="toggleColumn.emit($event)" (showAllColumns)="showAllColumns.emit()"
+      (hideAllColumns)="hideAllOptionalColumns.emit()" (columnsReordered)="columnsReordered.emit($event)" />
+  </div>
 </div>

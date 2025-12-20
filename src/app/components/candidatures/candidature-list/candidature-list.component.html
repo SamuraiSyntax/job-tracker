@@ -26,9 +26,6 @@
         Cartes
       </button>
 
-      <app-column-selector [visibleColumns]="visibleColumnsSet()" [availableColumns]="availableColumns()"
-        (toggleColumn)="toggleColumn($event)" (showAllColumns)="showAllColumns()"
-        (hideAllColumns)="hideAllOptionalColumns()" (columnsReordered)="onColumnsReordered($event)" />
       <button routerLink="/stats" class="btn-outline cursor-pointer">
         <i class="fas fa-chart-bar"></i>
         Statistiques
@@ -40,17 +37,37 @@
     </div>
   </div>
 
-  <!-- Composant Filtres -->
-  <app-candidature-filters [searchTerm]="searchTerm()" [selectedStatut]="selectedStatut()"
-    [selectedPriorite]="selectedPriorite()" [selectedTypeContrat]="selectedTypeContrat()"
-    [selectedScoreMin]="selectedScoreMin()" [selectedScoreMax]="selectedScoreMax()" [dateDebut]="dateDebut()"
-    [dateFin]="dateFin()" [showArchivedCandidatures]="showArchived()" [showNonArchivedCandidatures]="showNonArchived()"
-    [activeFiltersCount]="activeFiltersCount()" (searchTermChange)="searchTerm.set($event)"
-    (statutChange)="selectedStatut.set($event)" (prioriteChange)="selectedPriorite.set($event)"
-    (typeContratChange)="selectedTypeContrat.set($event)" (scoreMinChange)="selectedScoreMin.set($event)"
-    (scoreMaxChange)="selectedScoreMax.set($event)" (dateDebutChange)="dateDebut.set($event)"
-    (dateFinChange)="dateFin.set($event)" (archivedChange)="showArchived.set($event)"
-    (nonArchivedChange)="showNonArchived.set($event)" (clearFilters)="clearFilters()" />
+  <!-- Composant Filtres avec gestion des colonnes -->
+  <app-candidature-filters
+    [searchTerm]="searchTerm()"
+    [selectedStatut]="selectedStatut()"
+    [selectedPriorite]="selectedPriorite()"
+    [selectedTypeContrat]="selectedTypeContrat()"
+    [selectedScoreMin]="selectedScoreMin()"
+    [selectedScoreMax]="selectedScoreMax()"
+    [dateDebut]="dateDebut()"
+    [dateFin]="dateFin()"
+    [showArchivedCandidatures]="showArchived()"
+    [showNonArchivedCandidatures]="showNonArchived()"
+    [activeFiltersCount]="activeFiltersCount()"
+    [visibleColumnsSet]="visibleColumnsSet()"
+    [availableColumns]="availableColumns()"
+    (searchTermChange)="searchTerm.set($event)"
+    (statutChange)="selectedStatut.set($event)"
+    (prioriteChange)="selectedPriorite.set($event)"
+    (typeContratChange)="selectedTypeContrat.set($event)"
+    (scoreMinChange)="selectedScoreMin.set($event)"
+    (scoreMaxChange)="selectedScoreMax.set($event)"
+    (dateDebutChange)="dateDebut.set($event)"
+    (dateFinChange)="dateFin.set($event)"
+    (archivedChange)="showArchived.set($event)"
+    (nonArchivedChange)="showNonArchived.set($event)"
+    (clearFilters)="clearFilters()"
+    (toggleColumn)="toggleColumn($event)"
+    (showAllColumns)="showAllColumns()"
+    (hideAllOptionalColumns)="hideAllOptionalColumns()"
+    (columnsReordered)="onColumnsReordered($event)"
+  />
 
   <!-- Chips des filtres actifs -->
   @if (hasActiveFilters()) {
