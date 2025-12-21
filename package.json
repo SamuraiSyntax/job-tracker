@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --base-href \"/job-tracker/\"",
+    "postbuild": "copy \"src\\404.html\" \"dist\\frontend\\browser\\404.html\"",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
