@@ -24,7 +24,8 @@
         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Changer le mot de passe</h3>
         <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="space-y-4">
           <div>
-            <label for="currentPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mot de passe actuel</label>
+            <label for="currentPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mot de
+              passe actuel</label>
             <div class="relative">
               <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
               <input id="currentPassword" type="password" formControlName="currentPassword" placeholder="••••••••"
@@ -34,18 +35,36 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label for="newPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nouveau mot de
+              <label for="newPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nouveau
+                mot de
                 passe</label>
               <div class="relative">
                 <i class="fas fa-lock-open absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input id="newPassword" type="password" formControlName="newPassword" placeholder="••••••••"
-                  class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all">
+                  class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-400 transition-all"
+                  (copy)="$event.preventDefault()" (paste)="$event.preventDefault()" (cut)="$event.preventDefault()">
               </div>
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">8 caractères minimum</p>
+              <!-- Indicateur de force du mot de passe -->
+              <div class="mt-2">
+                <div class="h-2 rounded bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                  <div [ngClass]="{
+                    'bg-red-500': newPasswordStrength <= 2,
+                    'bg-yellow-400': newPasswordStrength === 3,
+                    'bg-blue-400': newPasswordStrength === 4,
+                    'bg-green-500': newPasswordStrength === 5
+                  }" [style.width]="(newPasswordStrength * 20) + '%'" class="h-2 transition-all"></div>
+                </div>
+                <ul class="text-xs mt-1 text-gray-500 dark:text-gray-400">
+                  @for (err of newPasswordErrors; track err) {
+                  <li>{{ err }}</li>
+                  }
+                </ul>
+              </div>
             </div>
 
             <div>
-              <label for="confirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirmer le mot de
+              <label for="confirmPassword"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirmer le mot de
                 passe</label>
               <div class="relative">
                 <i class="fas fa-check-circle absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -99,8 +118,8 @@
             </div>
           </div>
           <label for="notification-{{ setting.id }}" class="relative inline-flex items-center cursor-pointer">
-            <input id="notification-{{ setting.id }}" type="checkbox" [checked]="setting.enabled" (change)="onNotificationToggle(setting)"
-              class="sr-only peer">
+            <input id="notification-{{ setting.id }}" type="checkbox" [checked]="setting.enabled"
+              (change)="onNotificationToggle(setting)" class="sr-only peer">
             <div
               class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600">
             </div>
@@ -134,7 +153,8 @@
             </div>
           </div>
           <label for="privacy-{{ setting.id }}" class="relative inline-flex items-center cursor-pointer">
-            <input id="privacy-{{ setting.id }}" type="checkbox" [checked]="setting.enabled" (change)="onPrivacyToggle(setting)" class="sr-only peer">
+            <input id="privacy-{{ setting.id }}" type="checkbox" [checked]="setting.enabled"
+              (change)="onPrivacyToggle(setting)" class="sr-only peer">
             <div
               class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600">
             </div>

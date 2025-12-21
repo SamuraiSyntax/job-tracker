@@ -33,16 +33,13 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.isLoading = true;
       const formValue = this.loginForm.value;
-      // Hash du mot de passe côté client (salt faible car le vrai hash est côté serveur)
-      const salt = bcrypt.genSaltSync(6);
-      const hashedPassword = bcrypt.hashSync(formValue.password, salt);
-      const payload = { ...formValue, password: hashedPassword };
-
-      this.authService.login(payload)
+      // Envoyer le mot de passe en clair au backend
+      this.authService.login(formValue)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-        next: () => {
-          this.notificationService.success('Connexion réussie ! Bienvenue 🎉');
+        next: (response) => {
+          this.authService['handleAuthentication'](response);
+          this.notificationService.success('Connexion réussie ! Bienvenue <i class="fas fa-party-horn"></i>');
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {

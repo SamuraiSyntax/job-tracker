@@ -30,9 +30,19 @@ export class RegisterComponent {
       Validators.required,
       Validators.minLength(8),
       passwordComplexityValidator()
-    ]]
-  });
+    ]],
+    confirmPassword: ['', [Validators.required]]
+  }, { validators: this.passwordsMatchValidator });
 
+  // Validateur pour vérifier que les deux mots de passe sont identiques
+  private passwordsMatchValidator(formGroup: FormGroup): null | object {
+    const password = formGroup.get('password')?.value;
+    const confirmPassword = formGroup.get('confirmPassword')?.value;
+    if (password && confirmPassword && password !== confirmPassword) {
+      return { passwordsMismatch: true };
+    }
+    return null;
+  }
   get passwordStrength(): number {
     const value = this.registerForm.get('password')?.value || '';
     let score = 0;
@@ -63,17 +73,14 @@ export class RegisterComponent {
   async onSubmit(): Promise<void> {
     if (this.registerForm.valid) {
       this.isLoading = true;
-      const formValue = this.registerForm.value;
-      // Hash du mot de passe côté client (salt faible car le vrai hash est côté serveur)
-      const salt = bcrypt.genSaltSync(6);
-      const hashedPassword = bcrypt.hashSync(formValue.password, salt);
-      const payload = { ...formValue, password: hashedPassword };
-
-      this.authService.register(payload)
+      const { nom, prenom, email, password } = this.registerForm.value;
+      // Envoyer uniquement le mot de passe principal au backend
+      this.authService.register({ nom, prenom, email, password })
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-          next: () => {
-            this.notificationService.success('Inscription réussie ! Bienvenue 🎉');
+          next: (response) => {
+            this.authService['handleAuthentication'](response);
+            this.notificationService.success('Inscription réussie ! Bienvenue <i class="fas fa-party-horn"></i>');
             this.router.navigate(['/dashboard']);
           },
           error: (error) => {
@@ -83,7 +90,11 @@ export class RegisterComponent {
         });
     } else {
       this.markFormGroupTouched(this.registerForm);
-      this.notificationService.warning('Veuillez remplir correctement tous les champs');
+      if (this.registerForm.errors?.['passwordsMismatch']) {
+        this.notificationService.warning('Les mots de passe ne correspondent pas');
+      } else {
+        this.notificationService.warning('Veuillez remplir correctement tous les champs');
+      }
     }
   }
 

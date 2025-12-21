@@ -4,7 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } 
 import { AuthService, NotificationService, ThemeService } from '@services/index';
 import { NotificationSetting, PrivacySetting } from '@models/index';
 import { SwitchThemeComponent } from '@shared/components/switch-theme/switch-theme.component';
-import { passwordMatchValidator } from '@core/utils';
+import { passwordMatchValidator, passwordComplexityValidator } from '@core/utils/form-validators.utils';
+import * as bcrypt from 'bcryptjs';
 
 @Component({
   selector: 'app-settings',
@@ -70,7 +71,11 @@ export class SettingsComponent implements OnInit {
   private initPasswordForm(): void {
     this.passwordForm = this.fb.group({
       currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      newPassword: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        passwordComplexityValidator()
+      ]],
       confirmPassword: ['', Validators.required]
     }, {
       validators: passwordMatchValidator()
@@ -80,14 +85,46 @@ export class SettingsComponent implements OnInit {
   onChangePassword(): void {
     if (this.passwordForm.valid) {
       this.isChangingPassword.set(true);
-
-      // Simuler le changement de mot de passe
+      const formValue = this.passwordForm.value;
+      // Hash du nouveau mot de passe côté client (salt faible car le vrai hash est côté serveur)
+      const salt = bcrypt.genSaltSync(6);
+      const hashedNewPassword = bcrypt.hashSync(formValue.newPassword, salt);
+      // Ici, il faudrait appeler le service pour changer le mot de passe, par exemple :
+      // this.authService.changePassword({
+      //   currentPassword: formValue.currentPassword,
+      //   newPassword: hashedNewPassword
+      // })
+      // .subscribe(...)
+      // Pour l'instant, on simule :
       setTimeout(() => {
         this.notificationService.success('Mot de passe modifié avec succès');
         this.passwordForm.reset();
         this.isChangingPassword.set(false);
       }, 1500);
     }
+  }
+  get newPasswordStrength(): number {
+    const value = this.passwordForm?.get('newPassword')?.value || '';
+    let score = 0;
+    if (value.length >= 8) score++;
+    if (/[A-Z]/.test(value)) score++;
+    if (/[a-z]/.test(value)) score++;
+    if (/[0-9]/.test(value)) score++;
+    if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value)) score++;
+    return score;
+  }
+
+  get newPasswordErrors(): string[] {
+    const errors = this.passwordForm?.get('newPassword')?.errors;
+    if (!errors) return [];
+    const messages: string[] = [];
+    if (errors['required']) messages.push('Le mot de passe est requis.');
+    if (errors['minLength']) messages.push('Au moins 8 caractères.');
+    if (errors['uppercase']) messages.push('Au moins une majuscule.');
+    if (errors['lowercase']) messages.push('Au moins une minuscule.');
+    if (errors['digit']) messages.push('Au moins un chiffre.');
+    if (errors['special']) messages.push('Au moins un caractère spécial.');
+    return messages;
   }
 
   onNotificationToggle(setting: NotificationSetting): void {

@@ -27,19 +27,16 @@ export class AuthService {
   getCurrentUser = computed(() => this.currentUserSignal());
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials).pipe(
-      tap(response => this.handleAuthentication(response)),
-      catchError(this.handleError)
-    );
+    // Toujours envoyer le mot de passe en clair saisi par l'utilisateur
+    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials)
+      .pipe(catchError(this.handleError));
   }
 
   register(userData: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/register`, userData).pipe(
-      tap(response => this.handleAuthentication(response)),
-      catchError(this.handleError)
-    );
+    // Toujours envoyer le mot de passe en clair saisi par l'utilisateur
+    return this.http.post<AuthResponse>(`${this.API_URL}/register`, userData)
+      .pipe(catchError(this.handleError));
   }
-
   logout(): void {
     this.storage.removeItem(this.TOKEN_KEY);
     this.storage.removeItem(this.USER_KEY);
@@ -51,7 +48,20 @@ export class AuthService {
   getToken(): string | null {
     return this.tokenSignal();
   }
-
+  /**
+   * Demande la réinitialisation du mot de passe (envoi d'un email)
+   */
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/forgot-password`, { email })
+      .pipe(catchError(this.handleError));
+  }
+  /**
+   * Réinitialise le mot de passe via le backend
+   */
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/reset-password`, { token, newPassword })
+      .pipe(catchError(this.handleError));
+  }
   private handleAuthentication(response: AuthResponse): void {
     this.storage.setItem(this.TOKEN_KEY, response.token);
     this.storage.setItemStringified(this.USER_KEY, response.user);
@@ -69,7 +79,7 @@ export class AuthService {
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Une erreur est survenue';
-    
+
     if (error.error instanceof ErrorEvent) {
       // Erreur côté client
       errorMessage = `Erreur: ${error.error.message}`;
@@ -83,7 +93,7 @@ export class AuthService {
         errorMessage = 'Impossible de contacter le serveur';
       }
     }
-    
+
     return throwError(() => ({ message: errorMessage }));
   }
 }
