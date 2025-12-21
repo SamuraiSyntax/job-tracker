@@ -17,7 +17,9 @@ export class ResetPasswordComponent {
     resetForm: FormGroup;
     isLoading = false;
     submitted = false;
-    token: string | null = null;
+    email: string = '';
+    otpStatus: 'pending' | 'valid' | 'invalid' | 'expired' = 'pending';
+    otpMessage: string = '';
 
     constructor(
         private fb: FormBuilder,
@@ -26,13 +28,30 @@ export class ResetPasswordComponent {
         private notification: NotificationService,
         private router: Router
     ) {
+        this.email = this.route.snapshot.queryParamMap.get('email') || '';
         this.resetForm = this.fb.group({
-            newPassword: ['', [Validators.required, Validators.minLength(8)]],
-            confirmPassword: ['', [Validators.required]]
+            email: [this.email, [Validators.required, Validators.email]],
+            otpCode: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]],
+            newPassword: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(8)]],
+            confirmPassword: [{ value: '', disabled: true }, [Validators.required]]
         }, { validators: this.passwordsMatchValidator });
-        this.token = this.route.snapshot.queryParamMap.get('token');
+    }
+    private updatePasswordFieldsState() {
+        if (this.otpStatus === 'valid') {
+            this.newPassword?.enable();
+            this.confirmPassword?.enable();
+        } else {
+            this.newPassword?.disable();
+            this.confirmPassword?.disable();
+        }
     }
 
+    get emailControl() {
+        return this.resetForm.get('email');
+    }
+    get otpCode() {
+        return this.resetForm.get('otpCode');
+    }
     get newPassword() {
         return this.resetForm.get('newPassword');
     }
@@ -46,11 +65,49 @@ export class ResetPasswordComponent {
         return password === confirm ? null : { passwordMismatch: true };
     }
 
+    onVerifyOtp() {
+        const { email, otpCode } = this.resetForm.value;
+        if (!email || !otpCode || this.otpCode?.invalid) {
+            this.otpStatus = 'invalid';
+            this.otpMessage = 'Veuillez saisir un code valide.';
+            return;
+        }
+        this.isLoading = true;
+        this.authService.verifyOtp(email, otpCode).subscribe({
+            next: (res) => {
+                if (res.valid) {
+                    this.otpStatus = 'valid';
+                    this.otpMessage = 'Code OTP valide.';
+                    this.updatePasswordFieldsState();
+                } else if (res.expired) {
+                    this.otpStatus = 'expired';
+                    this.otpMessage = 'Code OTP expiré.';
+                    this.updatePasswordFieldsState();
+                } else {
+                    this.otpStatus = 'invalid';
+                    this.otpMessage = res.message || 'Code OTP invalide.';
+                    this.updatePasswordFieldsState();
+                }
+                this.isLoading = false;
+            },
+            error: (err) => {
+                this.otpStatus = 'invalid';
+                this.otpMessage = err?.message || 'Erreur lors de la vérification.';
+                this.updatePasswordFieldsState();
+                this.isLoading = false;
+            }
+        });
+    }
+
     onSubmit() {
         this.submitted = true;
-        if (this.resetForm.invalid || !this.token) return;
+        if (this.resetForm.invalid || this.otpStatus !== 'valid') {
+            this.notification.error(this.otpStatus === 'valid' ? 'Formulaire invalide.' : this.otpMessage || 'Veuillez vérifier le code OTP.');
+            return;
+        }
         this.isLoading = true;
-        this.authService.resetPassword(this.token, this.newPassword?.value).subscribe({
+        const { email, otpCode, newPassword } = this.resetForm.value;
+        this.authService.resetPasswordWithOtp(email, otpCode, newPassword).subscribe({
             next: () => {
                 this.notification.success('Votre mot de passe a été réinitialisé avec succès.');
                 this.isLoading = false;

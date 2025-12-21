@@ -42,7 +42,7 @@ export class ForgotPasswordComponent {
             next: () => {
                 this.notification.success('Un email de réinitialisation a été envoyé si l’adresse existe.');
                 this.isLoading = false;
-                this.router.navigate(['/auth/login']);
+                this.router.navigate(['/auth/reset-password'], { queryParams: { email: this.email?.value } });
             },
             error: () => {
                 this.notification.error('Erreur lors de la demande de réinitialisation.');

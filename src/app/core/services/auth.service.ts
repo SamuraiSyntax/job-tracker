@@ -62,6 +62,22 @@ export class AuthService {
     return this.http.post(`${this.API_URL}/reset-password`, { token, newPassword })
       .pipe(catchError(this.handleError));
   }
+  /**
+ * Réinitialise le mot de passe via code OTP
+ */
+  resetPasswordWithOtp(email: string, otpCode: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/reset-password-otp`, { email, otpCode, newPassword })
+      .pipe(catchError(this.handleError));
+  }
+  /**
+   * Vérifie la validité du code OTP avant de réinitialiser le mot de passe
+   */
+  verifyOtp(email: string, otpCode: string): Observable<{ valid: boolean; expired: boolean; message: string }> {
+    return this.http.get<{ valid: boolean; expired: boolean; message: string }>(
+      `${this.API_URL}/verify-otp`,
+      { params: { email, otpCode } }
+    ).pipe(catchError(this.handleError));
+  }
   private handleAuthentication(response: AuthResponse): void {
     this.storage.setItem(this.TOKEN_KEY, response.token);
     this.storage.setItemStringified(this.USER_KEY, response.user);

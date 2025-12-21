@@ -39,7 +39,7 @@ export class LoginComponent {
         .subscribe({
         next: (response) => {
           this.authService['handleAuthentication'](response);
-          this.notificationService.success('Connexion réussie ! Bienvenue <i class="fas fa-party-horn"></i>');
+          this.notificationService.success('Connexion réussie ! Bienvenue <i class="fas fa-smile-beam"></i>');
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {
