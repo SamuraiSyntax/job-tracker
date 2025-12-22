@@ -7,3 +7,4 @@ export * from './theme.service';
 export * from './confirmation.service';
 export * from './storage.service';
 export * from './navigation.service';
+export * from './user-data.service';

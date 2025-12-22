@@ -5,6 +5,7 @@ import { Observable, tap, catchError, throwError } from 'rxjs';
 import { User, LoginRequest, RegisterRequest, AuthResponse } from '@models/index';
 import { environment } from '@env/environment';
 import { StorageService } from './storage.service';
+import { NavigationService } from './navigation.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,36 +18,79 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private storage = inject(StorageService);
+  private navigationService = inject(NavigationService);
 
   // Signals pour une réactivité optimale
-  private currentUserSignal = signal<User | null>(this.loadUserFromStorage());
-  private tokenSignal = signal<string | null>(this.loadTokenFromStorage());
+  private currentUserSignal = signal<User | null>(null);
+  private tokenSignal = signal<string | null>(null);
 
   // Computed signals
-  isAuthenticated = computed(() => !!this.tokenSignal());
+  isAuthenticated = computed(() => {
+    const token = this.tokenSignal();
+    return !!token && !this.isTokenExpired(token);
+  });
   getCurrentUser = computed(() => this.currentUserSignal());
 
+  constructor() {
+    // Initialisation : charge le token et l'utilisateur depuis le storage, mais vérifie la validité du token
+    const token = this.loadTokenFromStorage();
+    if (token && !this.isTokenExpired(token)) {
+      this.tokenSignal.set(token);
+      const user = this.loadUserFromStorage();
+      this.currentUserSignal.set(user);
+    } else {
+      this.clearAuth();
+    }
+  }
+
   login(credentials: LoginRequest): Observable<AuthResponse> {
-    // Toujours envoyer le mot de passe en clair saisi par l'utilisateur
     return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap((response) => this.handleAuthentication(response)),
+        catchError(this.handleError)
+      );
   }
 
   register(userData: RegisterRequest): Observable<AuthResponse> {
-    // Toujours envoyer le mot de passe en clair saisi par l'utilisateur
     return this.http.post<AuthResponse>(`${this.API_URL}/register`, userData)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap((response) => this.handleAuthentication(response)),
+        catchError(this.handleError)
+      );
   }
   logout(): void {
+    this.clearAuth();
+    this.navigationService.toLogin();
+  }
+
+  private clearAuth(): void {
     this.storage.removeItem(this.TOKEN_KEY);
     this.storage.removeItem(this.USER_KEY);
     this.tokenSignal.set(null);
     this.currentUserSignal.set(null);
-    this.router.navigate(['/auth/login']);
   }
 
   getToken(): string | null {
-    return this.tokenSignal();
+    const token = this.tokenSignal();
+    if (!token || this.isTokenExpired(token)) {
+      this.clearAuth();
+      return null;
+    }
+    return token;
+  }
+
+  /**
+   * Vérifie si le token JWT est expiré
+   */
+  isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (!payload.exp) return true;
+      const now = Math.floor(Date.now() / 1000);
+      return payload.exp < now;
+    } catch {
+      return true;
+    }
   }
   /**
    * Demande la réinitialisation du mot de passe (envoi d'un email)

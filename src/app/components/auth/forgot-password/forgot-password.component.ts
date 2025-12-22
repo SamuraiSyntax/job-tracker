@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { AuthCardComponent, FormFieldErrorComponent } from '@app/components/shared';
+import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-forgot-password',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, AuthCardComponent, FormFieldErrorComponent],
+    imports: [CommonModule, ReactiveFormsModule, AuthCardComponent, FormFieldErrorComponent, RouterModule],
     templateUrl: './forgot-password.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -210,6 +210,14 @@
             <i class="fas fa-file-download"></i>
             Exporter
           </button>
+            <div class="mt-4 flex items-center gap-4">
+              <label for="importFile" class="flex items-center gap-2 cursor-pointer px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-900 dark:text-white rounded-lg font-medium transition-colors shadow-sm">
+                <i class="fas fa-file-upload"></i>
+                Importer
+                <input id="importFile" type="file" accept="application/json" (change)="onImportData($event)" class="hidden" />
+              </label>
+              <span class="text-sm text-gray-500 dark:text-gray-400">Importer un fichier JSON exporté</span>
+            </div>
         </div>
 
         <div class="border-t border-gray-200 dark:border-gray-700"></div>

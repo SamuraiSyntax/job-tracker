@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { AuthCardComponent, FormFieldErrorComponent } from '@app/components/shared';
@@ -9,7 +9,7 @@ import { AuthCardComponent, FormFieldErrorComponent } from '@app/components/shar
 @Component({
     selector: 'app-reset-password',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, AuthCardComponent, FormFieldErrorComponent],
+    imports: [CommonModule, ReactiveFormsModule, AuthCardComponent, FormFieldErrorComponent, RouterModule],
     templateUrl: './reset-password.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
